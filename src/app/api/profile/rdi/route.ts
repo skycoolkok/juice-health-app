@@ -1,8 +1,11 @@
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 import { NextRequest, NextResponse } from 'next/server';
 import { Sex } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { formatValue } from '@/lib/nutrients';
 import { loadRdiRecords, resolveUserContext } from '@/lib/rdi';
+
 
 function mapSex(input: string | null | undefined, fallback: Sex): Sex {
   if (!input) return fallback;

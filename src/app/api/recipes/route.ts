@@ -9,6 +9,9 @@ import meta from "@/data/tags.json";
  * - 依 id 遞增排序（可依你的 schema 改掉欄位）
  * - 將 meta 的功能/風味標籤合併進結果
  */
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET() {
   try {
     const recipes = await prisma.recipe.findMany({

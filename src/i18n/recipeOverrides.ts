@@ -16,7 +16,7 @@ export async function loadRecipeOverrides(
   const keys = Array.from(new Set([id, ...candidates].filter(Boolean)));
   for (const key of keys) {
     try {
-      const data = (await import(`@/i18n/recipes/${key}.${locale}.json`)).default;
+      const data = (await import(`./recipes/${key}.${locale}.json`)).default;
       return data as RecipeOverride;
     } catch {
       continue;

@@ -10,6 +10,7 @@ import { loadRdiRecords, resolveUserContext } from "@/lib/rdi";
 import { getRecipeTranslation } from "@/lib/recipeTranslations";
 import { loadRecipeOverrides } from "@/i18n/recipeOverrides";
 import { formatQty, formatUnit } from "@/i18n/units";
+import type { NutritionTranslationKey } from "@/i18n/recipes";
 import { locales, type Locale } from "@/app/i18n/config";
 
 const GRADIENTS = [
@@ -188,14 +189,20 @@ export default async function RecipeDetailPage({ params }: PageProps) {
       : 1;
 
   const t = await getTranslations({ locale, namespace: "recipe" });
+  type TranslationKeyPath = Parameters<typeof t>[0];
 
-  const translationKeyByNutrient: Partial<Record<string, string>> = {
+  const NUTRITION_TRANSLATION_MAP: Record<string, NutritionTranslationKey> = {
     calories_kcal: "calories",
     protein_g: "protein",
     fat_g: "fat",
-    carbs_g: "carbs",
+    carbs_g: "carbohydrates",
     fiber_g: "fiber",
     vitamin_c_mg: "vitaminC",
+    vitamin_a_ug: "vitaminA",
+    iron_mg: "iron",
+    calcium_mg: "calcium",
+    potassium_mg: "potassium",
+    sodium_mg: "sodium",
   };
 
   const nutritionCards = await Promise.all(
@@ -204,11 +211,13 @@ export default async function RecipeDetailPage({ params }: PageProps) {
       const total = totals.totals[key] ?? null;
       const perServing = totals.perServing ? totals.perServing[key] ?? null : null;
       const unit = await formatUnit(meta.unit, locale);
-      const translationKey = translationKeyByNutrient[key];
-      let label = meta.label;
+      const translationKey = NUTRITION_TRANSLATION_MAP[key] ?? "calories";
+      let label: string = meta.label;
       if (translationKey) {
         try {
-          label = t(`nutrition.${translationKey}`);
+          const keyForI18n = `nutrition.${translationKey}` as const;
+          keyForI18n satisfies `nutrition.${NutritionTranslationKey}`;
+          label = String(t(keyForI18n as TranslationKeyPath));
         } catch {
           label = meta.label;
         }
