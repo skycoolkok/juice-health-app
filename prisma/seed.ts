@@ -135,7 +135,7 @@ async function seedRdi() {
   }
 
   await prisma.rdiStandard.deleteMany();
-  await prisma.rdiStandard.createMany({ data: payload, skipDuplicates: true });
+  await prisma.rdiStandard.createMany({ data: payload });
 }
 
 async function main() {

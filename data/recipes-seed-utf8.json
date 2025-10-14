@@ -1,0 +1,36 @@
+{
+    "recipes":  [
+                    {
+                        "name":  "?∟?璈?",
+                        "source":  "seed",
+                        "description":  "蝪∪?亙熒??輯??單?瘙?,
+                        "servings":  1,
+                        "ingredients":  [
+                                            {
+                                                "quantity":  100,
+                                                "name":  "?∟??,
+                                                "unit":  "g"
+                                            },
+                                            {
+                                                "quantity":  200,
+                                                "name":  "?單?",
+                                                "unit":  "ml"
+                                            }
+                                        ],
+                        "category":  "蝢捆??",
+                        "notes":  null
+                    }
+                ],
+    "ingredients":  [
+                        {
+                            "category":  "?祈?",
+                            "name":  "?∟??,
+                            "default_unit":  "g"
+                        },
+                        {
+                            "category":  "瘞湔?",
+                            "name":  "?單?",
+                            "default_unit":  "ml"
+                        }
+                    ]
+}

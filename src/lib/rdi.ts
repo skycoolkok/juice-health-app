@@ -42,68 +42,72 @@ export async function resolveUserContext(userId?: number) {
   } as const;
 }
 
-let csvCache: { males: Record<NutrientKey, RdiRecord>; females: Record<NutrientKey, RdiRecord> } | null = null;
-let csvPromise: Promise<typeof csvCache> | null = null;
+type RdiCsvCache = { males: Record<NutrientKey, RdiRecord>; females: Record<NutrientKey, RdiRecord> };
 
-async function loadCsvFallback(): Promise<typeof csvCache> {
+let csvCache: RdiCsvCache | null = null;
+let csvPromise: Promise<RdiCsvCache> | null = null;
+
+async function loadCsvFallback(): Promise<RdiCsvCache> {
   if (csvCache) return csvCache;
   if (csvPromise) return csvPromise;
 
-  csvPromise = (async () => {
-    const csvPath = path.join(process.cwd(), 'data', 'rdi.csv');
-    const raw = await fs.readFile(csvPath, 'utf8');
-    const rows = parse(raw, {
-      columns: true,
-      skip_empty_lines: true,
-      trim: true,
-    }) as Array<{
-      nutrient: string;
-      unit: string;
-      adult_male: string;
-      adult_female: string;
-      source?: string;
-    }>;
+  if (!csvPromise) {
+    csvPromise = (async () => {
+      const csvPath = path.join(process.cwd(), 'data', 'rdi.csv');
+      const raw = await fs.readFile(csvPath, 'utf8');
+      const rows = parse(raw, {
+        columns: true,
+        skip_empty_lines: true,
+        trim: true,
+      }) as Array<{
+        nutrient: string;
+        unit: string;
+        adult_male: string;
+        adult_female: string;
+        source?: string;
+      }>;
 
-    const keyByName = new Map<string, NutrientKey>();
-    for (const key of Object.keys(NUTRIENT_CONFIG) as NutrientKey[]) {
-      keyByName.set(NUTRIENT_CONFIG[key].rdiKey, key);
-    }
-
-    function build(sex: Sex) {
-      const map = {} as Record<NutrientKey, RdiRecord>;
+      const keyByName = new Map<string, NutrientKey>();
       for (const key of Object.keys(NUTRIENT_CONFIG) as NutrientKey[]) {
-        map[key] = {
-          nutrientKey: key,
-          unit: NUTRIENT_CONFIG[key].unit,
-          daily: null,
-          weekly: null,
-          source: null,
-          region: 'CSV',
-        };
+        keyByName.set(NUTRIENT_CONFIG[key].rdiKey, key);
       }
-      for (const row of rows) {
-        const key = keyByName.get(row.nutrient);
-        if (!key) continue;
-        const value = Number(sex === Sex.MALE ? row.adult_male : row.adult_female);
-        map[key] = {
-          nutrientKey: key,
-          unit: row.unit,
-          daily: Number.isFinite(value) ? value : null,
-          weekly: Number.isFinite(value) ? value * 7 : null,
-          source: row.source ?? 'CSV',
-          region: 'CSV',
-        };
-      }
-      return map;
-    }
 
-    const cacheValue = {
-      males: build(Sex.MALE),
-      females: build(Sex.FEMALE),
-    };
-    csvCache = cacheValue;
-    return cacheValue;
-  })();
+      function build(sex: Sex) {
+        const map = {} as Record<NutrientKey, RdiRecord>;
+        for (const key of Object.keys(NUTRIENT_CONFIG) as NutrientKey[]) {
+          map[key] = {
+            nutrientKey: key,
+            unit: NUTRIENT_CONFIG[key].unit,
+            daily: null,
+            weekly: null,
+            source: null,
+            region: 'CSV',
+          };
+        }
+        for (const row of rows) {
+          const key = keyByName.get(row.nutrient);
+          if (!key) continue;
+          const value = Number(sex === Sex.MALE ? row.adult_male : row.adult_female);
+          map[key] = {
+            nutrientKey: key,
+            unit: row.unit,
+            daily: Number.isFinite(value) ? value : null,
+            weekly: Number.isFinite(value) ? value * 7 : null,
+            source: row.source ?? 'CSV',
+            region: 'CSV',
+          };
+        }
+        return map;
+      }
+
+      const cacheValue: RdiCsvCache = {
+        males: build(Sex.MALE),
+        females: build(Sex.FEMALE),
+      };
+      csvCache = cacheValue;
+      return cacheValue;
+    })();
+  }
 
   return csvPromise;
 }

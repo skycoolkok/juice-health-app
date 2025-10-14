@@ -1,0 +1,112 @@
+{
+  "nav": {
+    "home": "Home",
+    "recipes": "Recipes",
+    "myKitchen": "My Kitchen",
+    "rdi": "RDI Tracker",
+    "language": "Language"
+  },
+  "lang": {
+    "en": "EN",
+    "zh": "繁中",
+    "switch": "Switch language"
+  },
+  "action": {
+    "search": "Search",
+    "clear": "Clear",
+    "seeMore": "See more",
+    "favorite": "Add to favourites",
+    "unfavorite": "Remove from favourites",
+    "addToToday": "Add to today",
+    "back": "Back"
+  },
+  "state": {
+    "loading": "Loading...",
+    "results": "Results"
+  },
+  "error": {
+    "fetchRecipes": "Unable to load recipes. Please try again."
+  },
+  "flavor": {
+    "sour": "Sour",
+    "sweet": "Sweet",
+    "bitter": "Bitter",
+    "herbal": "Herbal",
+    "fresh": "Fresh",
+    "rich": "Rich",
+    "strong": "Bold"
+  },
+  "functional": {
+    "FOR_DIET": "Diet friendly",
+    "FOR_BEAUTY": "Beauty boost",
+    "DETOX": "Detox",
+    "ENERGY": "Energy"
+  },
+  "home": {
+    "heroTitle": "Juice Health & Slimming",
+    "heroSubtitle": "Create colourful juice routines, track your nutrients and stay in balance every day.",
+    "searchPlaceholder": "Search recipes or ingredients",
+    "searchHint": "Type a keyword to explore personalised results.",
+    "flavorTitle": "Choose a flavour mood",
+    "searchResultsTitle": "Search results",
+    "searchResultsSubtitle": "Live updates based on your keywords.",
+    "searchNone": "No recipes matched your search. Try a different keyword or flavour.",
+    "newTitle": "Latest recipes",
+    "newSubtitle": "Fresh ideas from our test kitchen.",
+    "newEmpty": "No new recipes yet. Seed the database to see latest additions.",
+    "searchLabel": "Search recipes or ingredients"
+  },
+  "recipes": {
+    "title": "Recipe library",
+    "subtitle": "Filter by benefit or flavour and open a recipe to see full nutrition details.",
+    "searchPlaceholder": "Search recipes or ingredients",
+    "prompt": "Enter a keyword to explore recipes.",
+    "empty": "No recipes match the selected filters. Try clearing the filters or using a different keyword.",
+    "resultsCount": "{count, plural, =0 {No recipes} one {# recipe} other {# recipes}}",
+    "servingsLabel": "{count, plural, one {# serving} other {# servings}}",
+    "loading": "Loading recipes...",
+    "linkRdi": "Check today's intake",
+    "functionalTitle": "Functional tags",
+    "flavorTitle": "Flavour tags",
+    "sort": {
+      "new": "Newest",
+      "popular": "Popular",
+      "lowCal": "Low calories"
+    },
+    "cardHint": "Open to view full nutrition and logging options.",
+    "sortLabel": "Sort by"
+  },
+  "recipeDetail": {
+    "back": "Back to recipes",
+    "servings": "{count, plural, one {# serving} other {# servings}}",
+    "ingredients": "Ingredients",
+    "instructions": "Directions",
+    "instructionsEmpty": "Instructions are coming soon for this recipe.",
+    "descriptionEmpty": "This recipe doesn’t have a description yet.",
+    "nutrition": "Nutrition",
+    "perServing": "Per serving",
+    "perRecipe": "For entire recipe",
+    "tags": "Tags",
+    "notFoundTitle": "Recipe not found",
+    "notFoundDescription": "We couldn’t find the recipe you’re looking for.",
+    "multiplierLabel": "Servings multiplier",
+    "multiplierHint": "Adjust the multiplier to scale ingredient amounts.",
+    "ingredientsHint": "Ingredient amounts update based on the multiplier.",
+    "steps": "Steps",
+    "stepsEmpty": "Steps are coming soon for this recipe.",
+    "addSuccess": "Added to today's log!",
+    "addError": "Unable to add to today's log.",
+    "favoriteAdded": "Added to favourites",
+    "favoriteRemoved": "Removed from favourites",
+    "favoriteUnavailable": "Sign in to save favourites",
+    "nutritionDaily": "Daily target",
+    "rdiLabel": "{value}% RDI",
+    "rdiNA": "Data missing (NA)",
+    "servingsFor": "{count}�� servings",
+    "favoriteError": "Unable to update favourite.",
+    "adding": "Adding�K"
+  },
+  "rdi": {
+    "na": "Data missing (NA)"
+  }
+}

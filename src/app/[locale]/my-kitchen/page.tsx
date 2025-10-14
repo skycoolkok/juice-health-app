@@ -2,7 +2,9 @@
 
 import { useEffect, useMemo, useState, type KeyboardEvent } from "react";
 import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
 import { RecipeCard, type RecipeSummary } from "@/components/RecipeCard";
+import { type Locale } from "../../i18n/config";
 
 const MAX_SUGGESTIONS = 10;
 
@@ -36,6 +38,15 @@ type KitchenApiRecipe = {
 };
 
 export default function MyKitchenPage() {
+  const locale = useLocale() as Locale;
+  const tKitchen = useTranslations("kitchen");
+  const tAction = useTranslations("action");
+  const tError = useTranslations("error");
+
+  const optionCategoryFallback = tKitchen("option.categoryFallback");
+  const optionCustomLabel = tKitchen("option.customLabel");
+  const selectedCustomSuffix = tKitchen("selected.customSuffix");
+  const selectedRemoveHint = tKitchen("selected.removeHint");
   const [options, setOptions] = useState<IngredientOption[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selected, setSelected] = useState<SelectedIngredient[]>([]);
@@ -49,7 +60,7 @@ export default function MyKitchenPage() {
       try {
         const response = await fetch("/api/ingredients", { cache: "force-cache" });
         if (!response.ok) {
-          throw new Error("Failed to load ingredients");
+          throw new Error(tError("loadIngredients"));
         }
         const data = await response.json();
         setOptions(Array.isArray(data.items) ? data.items : []);
@@ -58,7 +69,7 @@ export default function MyKitchenPage() {
       }
     };
     loadIngredients();
-  }, []);
+  }, [tError]);
 
   useEffect(() => {
     if (selected.length === 0) {
@@ -78,7 +89,7 @@ export default function MyKitchenPage() {
         });
         if (!response.ok) {
           const fallback = await response.json().catch(() => null);
-          throw new Error(fallback?.error ?? "Failed to load kitchen suggestions");
+          throw new Error(fallback?.error ?? tError("loadKitchenSuggestions"));
         }
         const data: KitchenResponse = await response.json();
         const mapRecipe = (recipe: KitchenApiRecipe) => ({
@@ -98,7 +109,7 @@ export default function MyKitchenPage() {
         console.error("[my-kitchen]", err);
         setReadyToMake([]);
         setMissingOne([]);
-        setError(err instanceof Error ? err.message : "Unable to fetch suggestions");
+        setError(err instanceof Error && err.message ? err.message : tError("unableToFetchSuggestions"));
       } finally {
         if (!controller.signal.aborted) {
           setLoading(false);
@@ -108,7 +119,7 @@ export default function MyKitchenPage() {
 
     loadSuggestions();
     return () => controller.abort();
-  }, [selected]);
+  }, [selected, tError]);
 
   const selectedNameSet = useMemo(
     () => new Set(selected.map((item) => item.name.toLowerCase())),
@@ -185,17 +196,15 @@ export default function MyKitchenPage() {
   return (
     <div className="flex flex-col gap-10 pb-16">
       <header className="space-y-2">
-        <h1 className="text-3xl font-semibold text-emerald-700">My Kitchen</h1>
-        <p className="text-sm text-slate-600">
-          Pick the ingredients you have today and we will suggest juice recipes you can make right now or that only need one extra item.
-        </p>
+        <h1 className="text-3xl font-semibold text-emerald-700">{tKitchen("title")}</h1>
+        <p className="text-sm text-slate-600">{tKitchen("subtitle")}</p>
       </header>
 
       <section className="space-y-4 rounded-2xl border border-emerald-200 bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-emerald-700">Your ingredients</h2>
-            <p className="text-xs text-slate-500">Search by name and add to your basket.</p>
+            <h2 className="text-lg font-semibold text-emerald-700">{tKitchen("searchLabel")}</h2>
+            <p className="text-xs text-slate-500">{tKitchen("searchSubtitle")}</p>
           </div>
           {selected.length > 0 && (
             <button
@@ -203,7 +212,7 @@ export default function MyKitchenPage() {
               onClick={() => setSelected([])}
               className="rounded-full border border-slate-200 px-4 py-2 text-xs font-medium text-slate-600 transition hover:border-slate-300 hover:bg-slate-100"
             >
-              Clear all
+              {tAction("clearAll")}
             </button>
           )}
         </div>
@@ -213,7 +222,7 @@ export default function MyKitchenPage() {
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
             onKeyDown={handleInputKeyDown}
-            placeholder="Type to search ingredients"
+            placeholder={tKitchen("input.placeholder")}
             className="w-full rounded-lg border border-emerald-200 px-3 py-2 text-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-100"
           />
           {trimmedSearch && (filteredOptions.length > 0 || canAddCustom) && (
@@ -229,7 +238,7 @@ export default function MyKitchenPage() {
                       <span className="rounded border border-slate-300 px-1 text-xs text-slate-400">+</span>
                       <span>{option.name}</span>
                     </span>
-                    <span className="text-xs text-slate-400">{option.category ?? "Uncategorised"}</span>
+                    <span className="text-xs text-slate-400">{option.category ?? optionCategoryFallback}</span>
                   </button>
                 </li>
               ))}
@@ -242,9 +251,9 @@ export default function MyKitchenPage() {
                   >
                     <span className="flex items-center gap-2">
                       <span className="rounded border border-emerald-400 px-1 text-xs text-emerald-500">+</span>
-                      <span>Add &ldquo;{trimmedSearch}&rdquo;</span>
+                      <span>{tKitchen("option.addCustom", { name: trimmedSearch })}</span>
                     </span>
-                    <span className="text-xs text-emerald-500">Custom ingredient</span>
+                    <span className="text-xs text-emerald-500">{optionCustomLabel}</span>
                   </button>
                 </li>
               )}
@@ -254,7 +263,7 @@ export default function MyKitchenPage() {
 
         {selected.length === 0 ? (
           <p className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-500">
-            Add at least one ingredient to see recipe suggestions.
+            {tKitchen("empty")}
           </p>
         ) : (
           <div className="flex flex-wrap gap-2">
@@ -263,10 +272,16 @@ export default function MyKitchenPage() {
                 key={item.key}
                 type="button"
                 onClick={() => removeIngredient(item.key)}
-                className="rounded-full bg-emerald-100 px-4 py-2 text-xs font-medium text-emerald-700 transition hover:bg-emerald-200"
+                className="group flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-2 text-xs font-medium text-emerald-700 transition hover:bg-emerald-200"
+                aria-label={`${selectedRemoveHint}: ${item.name}`}
               >
-                {item.name}
-                {item.isCustom ? " (custom)" : ""} x
+                <span>
+                  {item.name}
+                  {item.isCustom ? selectedCustomSuffix : ""}
+                </span>
+                <span aria-hidden="true" className="text-sm leading-none group-hover:scale-110">
+                  {"\u00d7"}
+                </span>
               </button>
             ))}
           </div>
@@ -275,20 +290,20 @@ export default function MyKitchenPage() {
 
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-emerald-700">Ready to make</h2>
-          <span className="text-xs text-slate-500">{readyToMake.length} matches</span>
+          <h2 className="text-lg font-semibold text-emerald-700">{tKitchen("section.ready.title")}</h2>
+          <span className="text-xs text-slate-500">{tKitchen("section.ready.count", { count: readyToMake.length })}</span>
         </div>
         {error && <p className="text-sm text-red-600">{error}</p>}
         {loading ? (
-          <p className="text-sm text-slate-500">Checking your pantry...</p>
+          <p className="text-sm text-slate-500">{tKitchen("section.ready.loading")}</p>
         ) : readyToMake.length === 0 ? (
           <p className="rounded-2xl border border-dashed border-slate-200 bg-white p-6 text-sm text-slate-500">
-            No full matches yet. Add more ingredients or explore the missing-one list below.
+            {tKitchen("section.ready.empty")}
           </p>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {readyToMake.map((recipe) => (
-              <RecipeCard key={`ready-${recipe.id}`} recipe={recipe} href={`/recipes/${recipe.id}`} />
+              <RecipeCard key={`ready-${recipe.id}`} recipe={recipe} />
             ))}
           </div>
         )}
@@ -296,21 +311,21 @@ export default function MyKitchenPage() {
 
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-orange-600">Missing one ingredient</h2>
-          <span className="text-xs text-slate-500">{missingOne.length} options</span>
+          <h2 className="text-lg font-semibold text-orange-600">{tKitchen("section.missing.title")}</h2>
+          <span className="text-xs text-slate-500">{tKitchen("section.missing.count", { count: missingOne.length })}</span>
         </div>
         {missingOne.length === 0 ? (
           <p className="rounded-2xl border border-dashed border-orange-200 bg-orange-50/60 p-6 text-sm text-orange-600">
-            Keep adding supplies to unlock almost-ready recipes.
+            {tKitchen("section.missing.empty")}
           </p>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {missingOne.map((recipe) => (
               <div key={`missing-${recipe.id}`} className="space-y-2">
-                <RecipeCard recipe={recipe} href={`/recipes/${recipe.id}`} />
+                <RecipeCard recipe={recipe} />
                 {recipe.missingIngredientNames?.length ? (
                   <div className="rounded-xl border border-orange-200 bg-orange-50 px-4 py-3 text-xs text-orange-600">
-                    <span className="font-semibold">缺少：</span>
+                    <span className="font-semibold">{tKitchen("section.missing.missingLabel")}</span>
                     <span>{recipe.missingIngredientNames.join(", ")}</span>
                   </div>
                 ) : null}
@@ -322,12 +337,25 @@ export default function MyKitchenPage() {
 
       <section className="rounded-2xl border border-emerald-200 bg-white p-6 shadow-sm">
         <p className="text-sm text-slate-600">
-          Want to plan ahead? Browse <Link href="/recipes" className="text-emerald-600 underline">all recipes</Link> or continue logging drinks in the <Link href="/rdi-tracker" className="text-emerald-600 underline">RDI tracker</Link>.
+          {tKitchen.rich("footer", {
+            linkRecipes: (chunks) => (
+              <Link href={`/${locale}/recipes`} className="text-emerald-600 underline">
+                {chunks}
+              </Link>
+            ),
+            linkRdi: (chunks) => (
+              <Link href={`/${locale}/rdi-tracker`} className="text-emerald-600 underline">
+                {chunks}
+              </Link>
+            ),
+          })}
         </p>
       </section>
     </div>
   );
 }
+
+
 
 
 

@@ -1,0 +1,239 @@
+{
+  "nav": {
+    "home": "Home",
+    "recipes": "Recipes",
+    "myKitchen": "My Kitchen",
+    "rdi": "RDI Tracker",
+    "language": "Language"
+  },
+  "lang": {
+    "en": "EN",
+    "zh": "繁中",
+    "switch": "Switch language"
+  },
+  "action": {
+    "search": "Search",
+    "clear": "Clear",
+    "clearAll": "Clear all",
+    "seeMore": "See more",
+    "favorite": "Add to favourites",
+    "unfavorite": "Remove from favourites",
+    "addToToday": "Add to today",
+    "back": "Back",
+    "saveProfile": "Save profile",
+    "savingProfile": "Saving...",
+    "undoLast": "Undo last log",
+    "undoing": "Removing...",
+    "addCustomIngredient": "Add \"{name}\"",
+    "customIngredient": "Custom ingredient"
+  },
+  "state": {
+    "loading": "Loading...",
+    "results": "Results"
+  },
+  "status": {
+    "loadingDashboard": "Loading dashboard data...",
+    "loadingPantry": "Checking your pantry...",
+    "profileUpdated": "Profile updated. Refreshing dashboard...",
+    "dashboardRefreshed": "Dashboard refreshed",
+    "logRemoved": "Last log entry removed"
+  },
+  "error": {
+    "fetchRecipes": "Unable to load recipes. Please try again.",
+    "loadIngredients": "Failed to load ingredients",
+    "loadKitchenSuggestions": "Failed to load kitchen suggestions",
+    "unableToFetchSuggestions": "Unable to fetch suggestions",
+    "loadProfileRecommendations": "Unable to load profile recommendations",
+    "loadDailyDashboard": "Unable to load daily dashboard",
+    "loadWeeklyDashboard": "Unable to load weekly dashboard",
+    "loadIntakeLogs": "Unable to load intake logs",
+    "saveProfile": "Failed to save profile",
+    "removeLog": "Failed to remove log entry",
+    "updateDashboard": "Unable to update dashboard"
+  },
+  "common": {
+    "na": "NA",
+    "missingData": "Data missing (NA)",
+    "uncategorised": "Uncategorised",
+    "customItem": "Custom item"
+  },
+  "flavor": {
+    "sour": "Sour",
+    "sweet": "Sweet",
+    "bitter": "Bitter",
+    "herbal": "Herbal",
+    "fresh": "Fresh",
+    "rich": "Rich",
+    "strong": "Bold"
+  },
+  "functional": {
+    "FOR_DIET": "Diet friendly",
+    "FOR_BEAUTY": "Beauty boost",
+    "DETOX": "Detox",
+    "ENERGY": "Energy"
+  },
+  "home": {
+    "heroTitle": "Juice Health & Slimming",
+    "heroSubtitle": "Create colourful juice routines, track your nutrients and stay in balance every day.",
+    "searchPlaceholder": "Search recipes or ingredients",
+    "searchHint": "Type a keyword to explore personalised results.",
+    "flavorTitle": "Choose a flavour mood",
+    "searchResultsTitle": "Search results",
+    "searchResultsSubtitle": "Live updates based on your keywords.",
+    "searchNone": "No recipes matched your search. Try a different keyword or flavour.",
+    "newTitle": "Latest recipes",
+    "newSubtitle": "Fresh ideas from our test kitchen.",
+    "newEmpty": "No new recipes yet. Seed the database to see latest additions.",
+    "searchLabel": "Search recipes or ingredients"
+  },
+  "recipes": {
+    "title": "Recipe library",
+    "subtitle": "Filter by benefit or flavour and open a recipe to see full nutrition details.",
+    "searchPlaceholder": "Search recipes or ingredients",
+    "prompt": "Enter a keyword to explore recipes.",
+    "empty": "No recipes match the selected filters. Try clearing the filters or using a different keyword.",
+    "resultsCount": "{count, plural, =0 {No recipes} one {# recipe} other {# recipes}}",
+    "servingsLabel": "{count, plural, one {# serving} other {# servings}}",
+    "loading": "Loading recipes...",
+    "linkRdi": "Check today's intake",
+    "functionalTitle": "Functional tags",
+    "flavorTitle": "Flavour tags",
+    "sort": {
+      "new": "Newest",
+      "popular": "Popular",
+      "lowCal": "Low calories"
+    },
+    "cardHint": "Open to view full nutrition and logging options.",
+    "sortLabel": "Sort by"
+  },
+  "recipe": {
+    "sections": {
+      "ingredients": "Ingredients",
+      "steps": "Steps",
+      "nutrition": "Nutrition Facts"
+    },
+    "labels": {
+      "servings": "Servings",
+      "back": "Back",
+      "perServing": "per serving",
+      "perRecipe": "per recipe"
+    },
+    "nutrition": {
+      "calories": "Calories",
+      "protein": "Protein",
+      "fat": "Fat",
+      "carbs": "Carbohydrates",
+      "fiber": "Fiber",
+      "vitaminC": "Vitamin C"
+    },
+    "units": {
+      "g": "g",
+      "mg": "mg",
+      "kcal": "kcal",
+      "ml": "ml",
+      "piece": "piece",
+      "pieces": "pieces",
+      "slice": "slice",
+      "slices": "slices",
+      "pinch": "pinch",
+      "tsp": "tsp"
+    }
+  },
+  "recipeDetail": {
+    "back": "Back to recipes",
+    "servings": "{count, plural, one {# serving} other {# servings}}",
+    "ingredients": "Ingredients",
+    "instructions": "Directions",
+    "instructionsEmpty": "Instructions are coming soon for this recipe.",
+    "descriptionEmpty": "This recipe doesn't have a description yet.",
+    "nutrition": "Nutrition",
+    "perServing": "Per serving",
+    "perRecipe": "For entire recipe",
+    "tags": "Tags",
+    "notFoundTitle": "Recipe not found",
+    "notFoundDescription": "We couldn't find the recipe you're looking for.",
+    "multiplierLabel": "Servings multiplier",
+    "multiplierHint": "Adjust the multiplier to scale ingredient amounts.",
+    "ingredientsHint": "Ingredient amounts update based on the multiplier.",
+    "steps": "Steps",
+    "stepsEmpty": "Steps are coming soon for this recipe.",
+    "addSuccess": "Added to today's log!",
+    "addError": "Unable to add to today's log.",
+    "favoriteAdded": "Added to favourites",
+    "favoriteRemoved": "Removed from favourites",
+    "favoriteUnavailable": "Sign in to save favourites",
+    "nutritionDaily": "Daily target",
+    "rdiLabel": "{value}% RDI",
+    "rdiNA": "Data missing (NA)",
+    "servingsFor": "Makes {count} servings",
+    "favoriteError": "Unable to update favourite.",
+    "adding": "Adding..."
+  },
+  "kitchen": {
+    "title": "My Kitchen",
+    "subtitle": "Pick the ingredients you have today and we'll suggest juice recipes you can make right now or that only need one extra item.",
+    "searchLabel": "Your ingredients",
+    "searchSubtitle": "Search by name and add to your basket.",
+    "input": {
+      "placeholder": "Type to search ingredients"
+    },
+    "empty": "Add at least one ingredient to see recipe suggestions.",
+    "selected": {
+      "removeHint": "Tap to remove",
+      "customSuffix": " (custom)"
+    },
+    "option": {
+      "categoryFallback": "Uncategorised",
+      "addCustom": "Add \"{name}\"",
+      "customLabel": "Custom ingredient"
+    },
+    "section": {
+      "ready": {
+        "title": "Ready to make",
+        "count": "{count} matches",
+        "loading": "Checking your pantry...",
+        "empty": "No full matches yet. Add more ingredients or explore the missing-one list below."
+      },
+      "missing": {
+        "title": "Missing one ingredient",
+        "count": "{count} options",
+        "empty": "Keep adding supplies to unlock almost-ready recipes.",
+        "missingLabel": "Missing:"
+      }
+    },
+    "footer": "Want to plan ahead? Browse <linkRecipes>all recipes</linkRecipes> or continue logging drinks in the <linkRdi>RDI tracker</linkRdi>."
+  },
+  "rdi": {
+    "title": "RDI Tracker",
+    "subtitle": "Monitor your daily and rolling 7-day nutrient intake versus the recommended amounts.",
+    "profile": {
+      "title": "Profile",
+      "subtitle": "Update sex, age, and timezone to personalise recommendations.",
+      "sex": "Sex",
+      "sexFemale": "Female",
+      "sexMale": "Male",
+      "age": "Age",
+      "timezone": "Timezone"
+    },
+    "section": {
+      "today": "Today",
+      "weekly": "Last 7 days",
+      "logs": {
+        "title": "Today's log items",
+        "subtitle": "Most recent entries appear first. Remove the last item if needed.",
+        "empty": "No items logged yet today. Use \"Add to today\" on any recipe to get started.",
+        "recentHighlights": "Recent highlights:",
+        "recentEmpty": "No recent entries"
+      }
+    },
+    "logs": {
+      "entryLabel": "Log #{id}"
+    },
+    "targets": {
+      "daily": "RDI",
+      "weekly": "Weekly RDI"
+    },
+    "footer": "Ready for another glass? Discover more ideas in the <linkRecipes>recipe catalog</linkRecipes> or explore personalised suggestions in <linkKitchen>My Kitchen</linkKitchen>.",
+    "na": "Data missing (NA)"
+  }
+}

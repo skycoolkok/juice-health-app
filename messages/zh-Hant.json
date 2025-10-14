@@ -1,0 +1,111 @@
+{
+  "nav": {
+    "home": "首頁",
+    "recipes": "食譜",
+    "myKitchen": "我的廚房",
+    "rdi": "RDI 追蹤",
+    "language": "語言"
+  },
+  "lang": {
+    "en": "EN",
+    "zh": "繁中",
+    "switch": "切換顯示語言"
+  },
+  "action": {
+    "search": "搜尋",
+    "clear": "清除",
+    "seeMore": "看更多",
+    "favorite": "加入收藏",
+    "unfavorite": "移除收藏",
+    "addToToday": "加入今日",
+    "back": "返回"
+  },
+  "state": {
+    "loading": "載入中…",
+    "results": "結果"
+  },
+  "error": {
+    "fetchRecipes": "目前無法載入食譜，請稍後再試。"
+  },
+  "flavor": {
+    "sour": "酸",
+    "sweet": "甜",
+    "bitter": "苦",
+    "herbal": "草本",
+    "fresh": "清爽",
+    "rich": "濃郁",
+    "strong": "濃烈"
+  },
+  "functional": {
+    "FOR_DIET": "減脂輕食",
+    "FOR_BEAUTY": "美容養顏",
+    "DETOX": "排毒淨化",
+    "ENERGY": "活力補給"
+  },
+  "home": {
+    "heroTitle": "健康清爽的日常飲食規劃",
+    "heroSubtitle": "打造繽紛蔬果汁日常，掌握營養狀況並保持好氣色。",
+    "searchPlaceholder": "搜尋食譜或食材",
+    "searchHint": "輸入關鍵字即可開始探索個人化結果。",
+    "flavorTitle": "挑選今日風味",
+    "searchResultsTitle": "搜尋結果",
+    "searchResultsSubtitle": "依據你的輸入即時更新。",
+    "searchNone": "沒有符合的食譜，試著改變關鍵字或風味。",
+    "newTitle": "最新食譜",
+    "newSubtitle": "來自測試廚房的新靈感。",
+    "newEmpty": "目前尚無最新食譜，請先匯入資料。"
+  },
+  "recipes": {
+    "title": "全部食譜",
+    "subtitle": "依功效或風味篩選，快速找到想要的飲品靈感。",
+    "searchPlaceholder": "搜尋食譜或食材",
+    "prompt": "輸入關鍵字即可開始探索。",
+    "empty": "沒有符合條件的食譜，試著清除篩選或換一個關鍵字。",
+    "resultsCount": "{count, plural, =0 {尚無食譜} other {# 道食譜}}",
+    "servingsLabel": "{count, plural, one {# 份} other {# 份}}",
+    "loading": "載入食譜中…",
+    "linkRdi": "查看今日攝取",
+    "functionalTitle": "功效標籤",
+    "flavorTitle": "風味標籤",
+    "sort": {
+      "new": "最新",
+      "popular": "熱門",
+      "lowCal": "低熱量"
+    },
+    "cardHint": "�I�}�Y�i�d�ݧ�����i��T�P�����ﶵ�C",
+    "sortLabel": "�Ƨ�"
+  },
+  "recipeDetail": {
+    "back": "返回食譜列表",
+    "servings": "{count, plural, one {# 份} other {# 份}}",
+    "ingredients": "食材",
+    "instructions": "作法",
+    "instructionsEmpty": "暫無作法，之後會補上。",
+    "descriptionEmpty": "此食譜尚未撰寫描述。",
+    "nutrition": "營養資訊",
+    "perServing": "每份",
+    "perRecipe": "整份",
+    "tags": "標籤",
+    "notFoundTitle": "找不到食譜",
+    "notFoundDescription": "可能已被移除，請返回食譜列表重新選擇。",
+    "multiplierLabel": "���q����",
+    "multiplierHint": "�վ㭿�ƴN��Y�ɧ�s�������q�C",
+    "ingredientsHint": "�U��ƶq�|�̷ӿ�w�������ܰʡC",
+    "steps": "�s�@�B�J",
+    "stepsEmpty": "�B�J�|�����ѡA�q�д��ݡC",
+    "addSuccess": "�w�[�J��������I",
+    "addError": "�[�J��������ɵo�Ͱ��D�C",
+    "favoriteAdded": "�w�[�J����",
+    "favoriteRemoved": "�w�q���ò���",
+    "favoriteUnavailable": "�n�J��Y�i���í���",
+    "nutritionDaily": "�C���ĳ��",
+    "rdiLabel": "{value}% RDI",
+    "rdiNA": "��Ưʤ֡]NA�^",
+    "servingsFor": "{count}�� ���q",
+    "favoriteError": "��s���ê��A���ѡC",
+    "adding": "�[�J���K"
+  },
+  "rdi": {
+    "na": "��Ưʤ֡]NA�^"
+  }
+}

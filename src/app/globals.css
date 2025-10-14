@@ -1,17 +1,21 @@
 @import "tailwindcss";
 
+/* 全域色彩與字型設定 */
 :root {
+  /* Light Mode 預設顏色 */
   --background: #ffffff;
   --foreground: #171717;
-}
 
-@theme inline {
+  /* 顏色變數別名 */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  /* 字型設定 */
+  --font-sans: var(--font-geist-sans, Arial, Helvetica, sans-serif);
+  --font-mono: var(--font-geist-mono, monospace);
 }
 
+/* Dark Mode 顏色設定 */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -19,8 +23,11 @@
   }
 }
 
+/* 全域樣式應用 */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  margin: 0;
+  padding: 0;
 }

@@ -70,7 +70,11 @@ function buildNotes(description?: string | null, steps?: string[]): string | nul
   return parts.join('\n\n');
 }
 
-async function seedRecipe(seed: SeedRecipe, meta: Record<string, { functional: string[]; flavor: string[] }>) {
+async function seedRecipe(
+  seed: SeedRecipe,
+  meta: Record<string, { functional: string[]; flavor: string[] }>,
+  processedIds: Set<string>,
+) {
   const notes = buildNotes(seed.description, seed.steps);
   const recipe = await prisma.recipe.upsert({
     where: { name: seed.name },
@@ -109,7 +113,9 @@ async function seedRecipe(seed: SeedRecipe, meta: Record<string, { functional: s
 
   const functional = (seed.tags?.functional ?? []).map((tag) => tag.toUpperCase());
   const flavor = (seed.tags?.flavor ?? []).map((tag) => tag.toUpperCase());
-  meta[String(recipe.id)] = { functional, flavor };
+  const recipeId = String(recipe.id);
+  meta[recipeId] = { functional, flavor };
+  processedIds.add(recipeId);
 
   console.log(`Seeded recipe: ${recipe.name} (#${recipe.id})`);
 }
@@ -122,17 +128,24 @@ async function main() {
     return;
   }
 
-  let meta: Record<string, { functional: string[]; flavor: string[] }> = {};
+  let existingMeta: Record<string, { functional: string[]; flavor: string[] }> = {};
   try {
     const metaRaw = await fs.readFile(META_PATH, 'utf8');
-    meta = JSON.parse(metaRaw);
+    existingMeta = JSON.parse(metaRaw);
   } catch (error) {
     console.warn('[seed-recipes] recipe-meta.json missing or invalid, creating new map');
-    meta = {};
+    existingMeta = {};
   }
 
+  const meta: Record<string, { functional: string[]; flavor: string[] }> = {};
+  const processedRecipeIds = new Set<string>();
   for (const seed of seeds) {
-    await seedRecipe(seed, meta);
+    await seedRecipe(seed, meta, processedRecipeIds);
+  }
+
+  const staleRecipeIds = Object.keys(existingMeta).filter((id) => !processedRecipeIds.has(id));
+  if (staleRecipeIds.length > 0) {
+    console.log('[seed-recipes] Removing metadata for missing recipes:', staleRecipeIds.join(', '));
   }
 
   const sortedMetaEntries = Object.entries(meta)
@@ -143,9 +156,6 @@ async function main() {
     JSON.stringify(sortedMeta, null, 2) + '\n',
     { encoding: 'utf8' },
   );
-
-
-
   console.log('[seed-recipes] Completed');
 }
 

@@ -1,577 +1,147 @@
 [
   {
-    "name": "Pineapple Mint Cooler",
-    "category": "Refreshing",
-    "servings": 2,
-    "description": "Bright pineapple juice blended with mint and coconut water for quick hydration.",
-    "source": "seed",
-    "ingredients": [
-      {
-        "name": "Pineapple",
-        "quantity": 350,
-        "unit": "g"
-      },
-      {
-        "name": "Fresh Mint",
-        "quantity": 10,
-        "unit": "g"
-      },
-      {
-        "name": "Coconut Water",
-        "quantity": 300,
-        "unit": "ml"
-      },
-      {
-        "name": "Lime",
-        "quantity": 1,
-        "unit": "piece"
-      }
-    ],
-    "steps": [
-      "Peel and cube the pineapple.",
-      "Blend pineapple with coconut water until smooth.",
-      "Add mint leaves and lime juice, pulse briefly.",
-      "Serve over ice and garnish with extra mint."
-    ],
-    "tags": {
-      "functional": [
-        "FOR_DIET",
-        "ENERGY"
-      ],
-      "flavor": [
-        "FRESH",
-        "SWEET"
-      ]
-    }
-  },
-  {
-    "name": "Citrus Carrot Glow",
-    "category": "Beauty",
-    "servings": 2,
-    "description": "Carrot, orange, and ginger create a vitamin-rich glow drink.",
-    "source": "seed",
-    "ingredients": [
-      {
-        "name": "Carrot",
-        "quantity": 250,
-        "unit": "g"
-      },
-      {
-        "name": "Orange",
-        "quantity": 2,
-        "unit": "piece"
-      },
-      {
-        "name": "Lemon",
-        "quantity": 0.5,
-        "unit": "piece"
-      },
-      {
-        "name": "Fresh Ginger",
-        "quantity": 5,
-        "unit": "g"
-      }
-    ],
-    "steps": [
-      "Peel the carrots and cut into chunks.",
-      "Juice the oranges and lemon.",
-      "Blend carrots with citrus juice and ginger until silky.",
-      "Strain if desired for a smoother finish."
-    ],
-    "tags": {
-      "functional": [
-        "FOR_BEAUTY",
-        "FOR_DIET"
-      ],
-      "flavor": [
-        "FRESH",
-        "SOUR"
-      ]
-    }
-  },
-  {
-    "name": "Green Detox Kick",
-    "category": "Detox",
+    "name": "胡蘿蔔柳橙汁",
     "servings": 1,
-    "description": "A zesty green juice with kale, cucumber, and lime to reset digestion.",
-    "source": "seed",
+    "tags": ["FOR_BEAUTY","DETOX"],
+    "flavors": ["FRESH","SWEET"],
     "ingredients": [
-      {
-        "name": "Kale",
-        "quantity": 60,
-        "unit": "g"
-      },
-      {
-        "name": "Cucumber",
-        "quantity": 180,
-        "unit": "g"
-      },
-      {
-        "name": "Green Apple",
-        "quantity": 1,
-        "unit": "piece"
-      },
-      {
-        "name": "Lime",
-        "quantity": 0.5,
-        "unit": "piece"
-      },
-      {
-        "name": "Celery",
-        "quantity": 80,
-        "unit": "g"
-      }
+      {"name":"胡蘿蔔","quantity":100,"unit":"g"},
+      {"name":"柳橙","quantity":200,"unit":"g"},
+      {"name":"水","quantity":100,"unit":"ml"}
     ],
-    "steps": [
-      "Wash and chop all produce.",
-      "Blend with cold water as needed until smooth.",
-      "Serve immediately with lime zest on top."
-    ],
-    "tags": {
-      "functional": [
-        "DETOX"
-      ],
-      "flavor": [
-        "HERBAL",
-        "FRESH"
-      ]
-    }
+    "steps": ["胡蘿蔔、柳橙洗淨去皮切塊。","加入水與全部食材，打至細緻。","可過濾或直接飲用。"],
+    "notes": "維C與β胡蘿蔔素補給。"
   },
   {
-    "name": "Spicy Ginger Beet",
-    "category": "Energy",
-    "servings": 2,
-    "description": "Beetroot and ginger bring circulation support with a peppery finish.",
-    "source": "seed",
-    "ingredients": [
-      {
-        "name": "Beetroot",
-        "quantity": 220,
-        "unit": "g"
-      },
-      {
-        "name": "Apple",
-        "quantity": 1,
-        "unit": "piece"
-      },
-      {
-        "name": "Carrot",
-        "quantity": 120,
-        "unit": "g"
-      },
-      {
-        "name": "Fresh Ginger",
-        "quantity": 8,
-        "unit": "g"
-      },
-      {
-        "name": "Black Pepper",
-        "quantity": 1,
-        "unit": "pinch"
-      }
-    ],
-    "steps": [
-      "Peel the beetroot and carrot.",
-      "Juice beetroot, carrot, and apple together.",
-      "Stir in grated ginger and a pinch of black pepper.",
-      "Serve chilled."
-    ],
-    "tags": {
-      "functional": [
-        "ENERGY"
-      ],
-      "flavor": [
-        "STRONG",
-        "BITTER"
-      ]
-    }
-  },
-  {
-    "name": "Berry Antioxidant Burst",
-    "category": "Immunity",
-    "servings": 2,
-    "description": "Mixed berries with chia seeds deliver antioxidants and fiber.",
-    "source": "seed",
-    "ingredients": [
-      {
-        "name": "Blueberry",
-        "quantity": 120,
-        "unit": "g"
-      },
-      {
-        "name": "Strawberry",
-        "quantity": 150,
-        "unit": "g"
-      },
-      {
-        "name": "Raspberry",
-        "quantity": 80,
-        "unit": "g"
-      },
-      {
-        "name": "Chia Seed",
-        "quantity": 14,
-        "unit": "g"
-      },
-      {
-        "name": "Almond Milk",
-        "quantity": 250,
-        "unit": "ml"
-      }
-    ],
-    "steps": [
-      "Rinse all berries.",
-      "Blend berries with almond milk until creamy.",
-      "Stir in chia seeds and chill for five minutes.",
-      "Serve topped with extra berries."
-    ],
-    "tags": {
-      "functional": [
-        "FOR_BEAUTY",
-        "ENERGY"
-      ],
-      "flavor": [
-        "SWEET"
-      ]
-    }
-  },
-  {
-    "name": "Coconut Hydration Splash",
-    "category": "Hydration",
+    "name": "鳳梨蘋果C",
     "servings": 1,
-    "description": "Coconut water, cucumber, and lime keep electrolytes balanced.",
-    "source": "seed",
+    "tags": ["FOR_DIET","ENERGY"],
+    "flavors": ["SWEET","FRESH"],
     "ingredients": [
-      {
-        "name": "Coconut Water",
-        "quantity": 320,
-        "unit": "ml"
-      },
-      {
-        "name": "Cucumber",
-        "quantity": 120,
-        "unit": "g"
-      },
-      {
-        "name": "Lime",
-        "quantity": 0.5,
-        "unit": "piece"
-      },
-      {
-        "name": "Sea Salt",
-        "quantity": 1,
-        "unit": "pinch"
-      }
+      {"name":"鳳梨","quantity":150,"unit":"g"},
+      {"name":"蘋果","quantity":150,"unit":"g"},
+      {"name":"水","quantity":120,"unit":"ml"}
     ],
-    "steps": [
-      "Slice cucumber and blend with coconut water.",
-      "Add lime juice and a pinch of sea salt.",
-      "Serve over crushed ice."
-    ],
-    "tags": {
-      "functional": [
-        "FOR_DIET"
-      ],
-      "flavor": [
-        "FRESH"
-      ]
-    }
+    "steps": ["去皮切塊。","加水打勻。"]
   },
   {
-    "name": "Orange Turmeric Shield",
-    "category": "Immunity",
-    "servings": 2,
-    "description": "A golden blend of orange, carrot, turmeric, and pepper for better absorption.",
-    "source": "seed",
-    "ingredients": [
-      {
-        "name": "Orange",
-        "quantity": 2,
-        "unit": "piece"
-      },
-      {
-        "name": "Carrot",
-        "quantity": 200,
-        "unit": "g"
-      },
-      {
-        "name": "Turmeric Root",
-        "quantity": 6,
-        "unit": "g"
-      },
-      {
-        "name": "Black Pepper",
-        "quantity": 1,
-        "unit": "pinch"
-      }
-    ],
-    "steps": [
-      "Juice oranges and carrots together.",
-      "Blend juice with turmeric root.",
-      "Add a pinch of black pepper before serving."
-    ],
-    "tags": {
-      "functional": [
-        "DETOX",
-        "ENERGY"
-      ],
-      "flavor": [
-        "SWEET",
-        "HERBAL"
-      ]
-    }
-  },
-  {
-    "name": "Matcha Pear Reviver",
-    "category": "Morning",
+    "name": "綠拿鐵（菠菜香蕉蘋果）",
     "servings": 1,
-    "description": "Matcha green tea shaken with pear and spinach for a caffeine lift.",
-    "source": "seed",
+    "tags": ["FOR_DIET","FOR_BEAUTY"],
+    "flavors": ["HERBAL","FRESH","SWEET"],
     "ingredients": [
-      {
-        "name": "Pear",
-        "quantity": 1,
-        "unit": "piece"
-      },
-      {
-        "name": "Spinach",
-        "quantity": 40,
-        "unit": "g"
-      },
-      {
-        "name": "Matcha Powder",
-        "quantity": 2,
-        "unit": "g"
-      },
-      {
-        "name": "Water",
-        "quantity": 200,
-        "unit": "ml"
-      },
-      {
-        "name": "Honey",
-        "quantity": 10,
-        "unit": "g"
-      }
+      {"name":"菠菜","quantity":60,"unit":"g"},
+      {"name":"香蕉","quantity":100,"unit":"g"},
+      {"name":"蘋果","quantity":120,"unit":"g"},
+      {"name":"水","quantity":150,"unit":"ml"}
     ],
-    "steps": [
-      "Blend pear with water until smooth.",
-      "Add spinach and honey, blend again.",
-      "Whisk matcha with a splash of warm water and fold into the juice.",
-      "Serve over ice."
-    ],
-    "tags": {
-      "functional": [
-        "ENERGY"
-      ],
-      "flavor": [
-        "HERBAL",
-        "SWEET"
-      ]
-    }
+    "steps": ["所有食材洗淨切塊。","加入果汁機打至滑順。"]
   },
   {
-    "name": "Watermelon Basil Chill",
-    "category": "Cooling",
-    "servings": 2,
-    "description": "Juicy watermelon with basil and lime for hot afternoons.",
-    "source": "seed",
-    "ingredients": [
-      {
-        "name": "Watermelon",
-        "quantity": 500,
-        "unit": "g"
-      },
-      {
-        "name": "Fresh Basil",
-        "quantity": 8,
-        "unit": "g"
-      },
-      {
-        "name": "Lime",
-        "quantity": 1,
-        "unit": "piece"
-      }
-    ],
-    "steps": [
-      "Cube watermelon and remove seeds.",
-      "Blend with basil leaves and lime juice.",
-      "Serve chilled with extra basil."
-    ],
-    "tags": {
-      "functional": [
-        "FOR_DIET"
-      ],
-      "flavor": [
-        "FRESH",
-        "SWEET"
-      ]
-    }
-  },
-  {
-    "name": "Sweet Potato Spice Shake",
-    "category": "Recovery",
-    "servings": 2,
-    "description": "Roasted sweet potato with cinnamon and almond milk for post-workout recovery.",
-    "source": "seed",
-    "ingredients": [
-      {
-        "name": "Sweet Potato",
-        "quantity": 220,
-        "unit": "g"
-      },
-      {
-        "name": "Almond Milk",
-        "quantity": 260,
-        "unit": "ml"
-      },
-      {
-        "name": "Cinnamon",
-        "quantity": 1,
-        "unit": "tsp"
-      },
-      {
-        "name": "Vanilla Extract",
-        "quantity": 2,
-        "unit": "ml"
-      }
-    ],
-    "steps": [
-      "Roast sweet potato until soft, then cool slightly.",
-      "Blend with almond milk, cinnamon, and vanilla extract.",
-      "Serve warm or chilled, topped with extra cinnamon."
-    ],
-    "tags": {
-      "functional": [
-        "ENERGY"
-      ],
-      "flavor": [
-        "SWEET",
-        "STRONG"
-      ]
-    }
-  },
-  {
-    "name": "Grape Soy Boost",
-    "category": "Energy",
+    "name": "芹菜蘋果檸檬汁",
     "servings": 1,
-    "description": "Soy milk blended with grapes and flaxseed for protein and omega-3s.",
-    "source": "seed",
+    "tags": ["DETOX","FOR_DIET"],
+    "flavors": ["FRESH","HERBAL","SOUR"],
     "ingredients": [
-      {
-        "name": "Red Grapes",
-        "quantity": 200,
-        "unit": "g"
-      },
-      {
-        "name": "Soy Milk",
-        "quantity": 250,
-        "unit": "ml"
-      },
-      {
-        "name": "Ground Flaxseed",
-        "quantity": 12,
-        "unit": "g"
-      }
+      {"name":"芹菜","quantity":80,"unit":"g"},
+      {"name":"蘋果","quantity":150,"unit":"g"},
+      {"name":"檸檬汁","quantity":20,"unit":"ml"},
+      {"name":"水","quantity":120,"unit":"ml"}
     ],
-    "steps": [
-      "Blend grapes until smooth.",
-      "Add soy milk and flaxseed, blend again.",
-      "Serve immediately for best flavour."
-    ],
-    "tags": {
-      "functional": [
-        "ENERGY"
-      ],
-      "flavor": [
-        "SWEET"
-      ]
-    }
+    "steps": ["芹菜去絲切段，蘋果切塊。","與檸檬汁、水一同打勻。"]
   },
   {
-    "name": "Apple Celery Refresher",
-    "category": "Daily",
-    "servings": 2,
-    "description": "A crisp blend of apple, celery, and parsley to refresh the palate.",
-    "source": "seed",
-    "ingredients": [
-      {
-        "name": "Apple",
-        "quantity": 2,
-        "unit": "piece"
-      },
-      {
-        "name": "Celery",
-        "quantity": 140,
-        "unit": "g"
-      },
-      {
-        "name": "Parsley",
-        "quantity": 12,
-        "unit": "g"
-      },
-      {
-        "name": "Lemon",
-        "quantity": 0.5,
-        "unit": "piece"
-      }
-    ],
-    "steps": [
-      "Chop apples and celery.",
-      "Juice together with parsley and lemon.",
-      "Stir and serve cold."
-    ],
-    "tags": {
-      "functional": [
-        "DETOX"
-      ],
-      "flavor": [
-        "FRESH",
-        "HERBAL"
-      ]
-    }
-  },
-  {
-    "name": "Peanut Banana Recovery",
-    "category": "Recovery",
+    "name": "西瓜薄荷爽",
     "servings": 1,
-    "description": "Protein-packed banana shake with peanut butter and oats.",
-    "source": "seed",
+    "tags": ["ENERGY","FOR_BEAUTY"],
+    "flavors": ["FRESH","SWEET","HERBAL"],
     "ingredients": [
-      {
-        "name": "Banana",
-        "quantity": 1,
-        "unit": "piece"
-      },
-      {
-        "name": "Peanut Butter",
-        "quantity": 32,
-        "unit": "g"
-      },
-      {
-        "name": "Rolled Oats",
-        "quantity": 20,
-        "unit": "g"
-      },
-      {
-        "name": "Skim Milk",
-        "quantity": 250,
-        "unit": "ml"
-      }
+      {"name":"西瓜","quantity":250,"unit":"g"},
+      {"name":"薄荷葉","quantity":5,"unit":"g"}
     ],
-    "steps": [
-      "Add all ingredients to a blender.",
-      "Blend on high until creamy.",
-      "Serve topped with crushed peanuts if desired."
+    "steps": ["西瓜切塊去籽，與薄荷一起打。","可加冰塊。"]
+  },
+  {
+    "name": "葡萄豆奶昔",
+    "servings": 1,
+    "tags": ["FOR_BEAUTY","ENERGY"],
+    "flavors": ["SWEET","FRESH"],
+    "ingredients": [
+      {"name":"葡萄","quantity":150,"unit":"g"},
+      {"name":"豆奶（無糖）","quantity":200,"unit":"ml"}
     ],
-    "tags": {
-      "functional": [
-        "ENERGY"
-      ],
-      "flavor": [
-        "SWEET",
-        "STRONG"
-      ]
-    }
+    "steps": ["葡萄去梗洗淨。","與豆奶一起打至綿密。"]
+  },
+  {
+    "name": "番茄羅勒汁",
+    "servings": 1,
+    "tags": ["DETOX","FOR_BEAUTY"],
+    "flavors": ["HERBAL","FRESH"],
+    "ingredients": [
+      {"name":"番茄","quantity":200,"unit":"g"},
+      {"name":"羅勒","quantity":4,"unit":"g"}
+    ],
+    "steps": ["番茄切塊，與羅勒打勻。"]
+  },
+  {
+    "name": "芒果優格昔",
+    "servings": 1,
+    "tags": ["FOR_BEAUTY","ENERGY"],
+    "flavors": ["SWEET","RICH" ],
+    "ingredients": [
+      {"name":"芒果","quantity":160,"unit":"g"},
+      {"name":"優格（原味無糖）","quantity":150,"unit":"g"}
+    ],
+    "steps": ["芒果切塊與優格一起打至滑順。"]
+  },
+  {
+    "name": "奇異果蘋果汁",
+    "servings": 1,
+    "tags": ["FOR_BEAUTY","DETOX"],
+    "flavors": ["SOUR","FRESH","SWEET"],
+    "ingredients": [
+      {"name":"奇異果","quantity":120,"unit":"g"},
+      {"name":"蘋果","quantity":120,"unit":"g"},
+      {"name":"水","quantity":80,"unit":"ml"}
+    ],
+    "steps": ["去皮切塊與水一同打勻。"]
+  },
+  {
+    "name": "小黃瓜檸檬薄荷水",
+    "servings": 1,
+    "tags": ["DETOX","FOR_DIET"],
+    "flavors": ["FRESH","HERBAL","SOUR"],
+    "ingredients": [
+      {"name":"小黃瓜","quantity":120,"unit":"g"},
+      {"name":"檸檬汁","quantity":15,"unit":"ml"},
+      {"name":"薄荷葉","quantity":5,"unit":"g"},
+      {"name":"水","quantity":200,"unit":"ml"}
+    ],
+    "steps": ["全部入果汁機打勻或浸泡後飲用。"]
+  },
+  {
+    "name": "鳳梨苦瓜檸檬汁",
+    "servings": 1,
+    "tags": ["FOR_DIET","DETOX"],
+    "flavors": ["BITTER","FRESH","SOUR"],
+    "ingredients": [
+      {"name":"苦瓜","quantity":80,"unit":"g"},
+      {"name":"鳳梨","quantity":160,"unit":"g"},
+      {"name":"檸檬汁","quantity":15,"unit":"ml"},
+      {"name":"水","quantity":120,"unit":"ml"}
+    ],
+    "steps": ["苦瓜去囊薄切、鳳梨切塊。與檸檬汁與水一起打勻。"]
+  },
+  {
+    "name": "木瓜牛奶（蜂蜜少許）",
+    "servings": 1,
+    "tags": ["ENERGY","FOR_BEAUTY"],
+    "flavors": ["SWEET","RICH"],
+    "ingredients": [
+      {"name":"木瓜","quantity":180,"unit":"g"},
+      {"name":"牛奶","quantity":200,"unit":"ml"},
+      {"name":"蜂蜜","quantity":10,"unit":"g"}
+    ],
+    "steps": ["木瓜切塊與牛奶打勻，蜂蜜依口味添加。"]
   }
 ]

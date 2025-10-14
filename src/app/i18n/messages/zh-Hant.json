@@ -1,0 +1,239 @@
+{
+  "nav": {
+    "home": "首頁",
+    "recipes": "食譜",
+    "myKitchen": "我的廚房",
+    "rdi": "RDI 追蹤",
+    "language": "語言"
+  },
+  "lang": {
+    "en": "EN",
+    "zh": "繁中",
+    "switch": "切換語言"
+  },
+  "action": {
+    "search": "搜尋",
+    "clear": "清除",
+    "clearAll": "全部清除",
+    "seeMore": "查看更多",
+    "favorite": "加入最愛",
+    "unfavorite": "移除最愛",
+    "addToToday": "加入今日",
+    "back": "返回",
+    "saveProfile": "儲存設定",
+    "savingProfile": "儲存中...",
+    "undoLast": "復原最新紀錄",
+    "undoing": "移除中...",
+    "addCustomIngredient": "加入「{name}」",
+    "customIngredient": "自訂食材"
+  },
+  "state": {
+    "loading": "載入中...",
+    "results": "結果"
+  },
+  "status": {
+    "loadingDashboard": "正在載入儀表板資料...",
+    "loadingPantry": "正在檢查你的食材清單...",
+    "profileUpdated": "個人設定已更新，正在重新整理儀表板...",
+    "dashboardRefreshed": "儀表板已更新",
+    "logRemoved": "已移除最後一筆紀錄"
+  },
+  "error": {
+    "fetchRecipes": "無法載入食譜，請稍後再試。",
+    "loadIngredients": "無法載入食材資料",
+    "loadKitchenSuggestions": "無法取得廚房建議",
+    "unableToFetchSuggestions": "目前無法取得建議項目",
+    "loadProfileRecommendations": "無法載入個人化建議",
+    "loadDailyDashboard": "無法載入每日儀表板",
+    "loadWeeklyDashboard": "無法載入每週儀表板",
+    "loadIntakeLogs": "無法載入飲用紀錄",
+    "saveProfile": "儲存個人設定失敗",
+    "removeLog": "移除紀錄失敗",
+    "updateDashboard": "無法更新儀表板"
+  },
+  "common": {
+    "na": "NA",
+    "missingData": "缺少資料 (NA)",
+    "uncategorised": "未分類",
+    "customItem": "自訂項目"
+  },
+  "flavor": {
+    "sour": "酸",
+    "sweet": "甜",
+    "bitter": "苦",
+    "herbal": "草本",
+    "fresh": "清爽",
+    "rich": "濃郁",
+    "strong": "厚實"
+  },
+  "functional": {
+    "FOR_DIET": "輕卡無負擔",
+    "FOR_BEAUTY": "美容養顏",
+    "DETOX": "淨化排毒",
+    "ENERGY": "活力補給"
+  },
+  "home": {
+    "heroTitle": "Juice 健康輕盈日常",
+    "heroSubtitle": "打造繽紛的蔬果汁日程，掌握營養並維持每日平衡。",
+    "searchPlaceholder": "搜尋食譜或食材",
+    "searchHint": "輸入關鍵字即可探索個人化結果。",
+    "flavorTitle": "挑選今日風味",
+    "searchResultsTitle": "搜尋結果",
+    "searchResultsSubtitle": "依據你輸入的關鍵字即時更新。",
+    "searchNone": "沒有符合的食譜，試試換個關鍵字或風味。",
+    "newTitle": "最新食譜",
+    "newSubtitle": "來自測試廚房的新點子。",
+    "newEmpty": "目前沒有新食譜，請先匯入種子資料。",
+    "searchLabel": "搜尋食譜或食材"
+  },
+  "recipes": {
+    "title": "食譜資料庫",
+    "subtitle": "依功效或風味篩選，開啟食譜即可查看完整營養資訊。",
+    "searchPlaceholder": "搜尋食譜或食材",
+    "prompt": "輸入關鍵字探索食譜。",
+    "empty": "沒有符合條件的食譜，請清除篩選或換個關鍵字。",
+    "resultsCount": "{count, plural, =0 {沒有食譜} other {# 道食譜}}",
+    "servingsLabel": "{count, plural, one {# 份} other {# 份}}",
+    "loading": "正在載入食譜...",
+    "linkRdi": "查看今日攝取量",
+    "functionalTitle": "功效標籤",
+    "flavorTitle": "風味標籤",
+    "sort": {
+      "new": "最新",
+      "popular": "熱門",
+      "lowCal": "低熱量"
+    },
+    "cardHint": "開啟卡片可查看完整營養與紀錄選項。",
+    "sortLabel": "排序方式"
+  },
+  "recipe": {
+    "sections": {
+      "ingredients": "食材",
+      "steps": "步驟",
+      "nutrition": "營養資訊"
+    },
+    "labels": {
+      "servings": "份數",
+      "back": "返回",
+      "perServing": "每份",
+      "perRecipe": "整份"
+    },
+    "nutrition": {
+      "calories": "熱量",
+      "protein": "蛋白質",
+      "fat": "脂肪",
+      "carbs": "碳水化合物",
+      "fiber": "纖維",
+      "vitaminC": "維生素 C"
+    },
+    "units": {
+      "g": "公克",
+      "mg": "毫克",
+      "kcal": "大卡",
+      "ml": "毫升",
+      "piece": "個",
+      "pieces": "個",
+      "slice": "片",
+      "slices": "片",
+      "pinch": "撮",
+      "tsp": "茶匙"
+    }
+  },
+  "recipeDetail": {
+    "back": "返回食譜列表",
+    "servings": "{count, plural, one {# 份} other {# 份}}",
+    "ingredients": "食材",
+    "instructions": "作法",
+    "instructionsEmpty": "此食譜暫無作法，敬請期待。",
+    "descriptionEmpty": "這道食譜尚未補上描述。",
+    "nutrition": "營養資訊",
+    "perServing": "每份",
+    "perRecipe": "整份",
+    "tags": "標籤",
+    "notFoundTitle": "找不到食譜",
+    "notFoundDescription": "無法找到你要的食譜。",
+    "multiplierLabel": "份量倍數",
+    "multiplierHint": "調整倍數即可放大或縮小食材用量。",
+    "ingredientsHint": "食材用量會依倍數即時更新。",
+    "steps": "步驟",
+    "stepsEmpty": "尚未提供步驟資訊。",
+    "addSuccess": "已加入今日紀錄！",
+    "addError": "無法加入今日紀錄。",
+    "favoriteAdded": "已加入最愛",
+    "favoriteRemoved": "已從最愛移除",
+    "favoriteUnavailable": "登入後即可儲存我的最愛",
+    "nutritionDaily": "每日目標",
+    "rdiLabel": "{value}% RDI",
+    "rdiNA": "缺少資料 (NA)",
+    "servingsFor": "可製作 {count} 份",
+    "favoriteError": "無法更新最愛狀態。",
+    "adding": "加入中..."
+  },
+  "kitchen": {
+    "title": "我的廚房",
+    "subtitle": "挑選今天手邊的食材，我們會推薦可以立即完成或只差一項的蔬果汁。",
+    "searchLabel": "你的食材",
+    "searchSubtitle": "輸入名稱並加入籃子。",
+    "input": {
+      "placeholder": "輸入食材名稱"
+    },
+    "empty": "至少加入一項食材即可看到食譜建議。",
+    "selected": {
+      "removeHint": "點擊移除",
+      "customSuffix": "（自訂）"
+    },
+    "option": {
+      "categoryFallback": "未分類",
+      "addCustom": "加入「{name}」",
+      "customLabel": "自訂食材"
+    },
+    "section": {
+      "ready": {
+        "title": "立即可做",
+        "count": "{count} 個結果",
+        "loading": "正在檢查你的食材...",
+        "empty": "暫時沒有完全符合的食譜，試著再加幾樣食材或查看下方「只差一項」。"
+      },
+      "missing": {
+        "title": "只差一項",
+        "count": "{count} 個選項",
+        "empty": "再補充一些食材，就能解鎖更多幾乎完成的食譜。",
+        "missingLabel": "缺少："
+      }
+    },
+    "footer": "想提前規劃嗎？逛逛<linkRecipes>全部食譜</linkRecipes>或前往<linkRdi>RDI 追蹤</linkRdi>繼續紀錄。"
+  },
+  "rdi": {
+    "title": "RDI 追蹤",
+    "subtitle": "即時掌握每日與最近 7 天的營養攝取與建議量差距。",
+    "profile": {
+      "title": "個人資料",
+      "subtitle": "更新性別、年齡與時區以獲得更貼近的建議。",
+      "sex": "性別",
+      "sexFemale": "女性",
+      "sexMale": "男性",
+      "age": "年齡",
+      "timezone": "時區"
+    },
+    "section": {
+      "today": "今天",
+      "weekly": "近 7 天",
+      "logs": {
+        "title": "今日紀錄項目",
+        "subtitle": "最新的紀錄會顯示在最上方。如需調整可移除最後一筆。",
+        "empty": "今天尚未加入任何飲品，於任何食譜點選「加入今日」即可開始紀錄。",
+        "recentHighlights": "最近亮點：",
+        "recentEmpty": "暫無最近項目"
+      }
+    },
+    "logs": {
+      "entryLabel": "紀錄 #{id}"
+    },
+    "targets": {
+      "daily": "建議攝取",
+      "weekly": "每週建議"
+    },
+    "footer": "想再來一杯嗎？到<linkRecipes>食譜總覽</linkRecipes>尋找靈感，或前往<linkKitchen>我的廚房</linkKitchen>探索個人化建議。",
+    "na": "缺少資料 (NA)"
+  }
+}
