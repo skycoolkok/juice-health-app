@@ -6,7 +6,21 @@ function jsonError(message: string, status = 400) {
   return NextResponse.json({ ok: false, error: message, message }, { status });
 }
 
+function maybeReadonlyResponse() {
+  if (process.env.PROD_READONLY === 'true') {
+    return NextResponse.json({
+      ok: true,
+      readonly: true,
+      message: 'Staging: writes are disabled',
+    });
+  }
+  return null;
+}
+
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+  const readonly = maybeReadonlyResponse();
+  if (readonly) return readonly;
+
   const recipeId = Number.parseInt(params.id, 10);
   if (!Number.isFinite(recipeId)) {
     return jsonError('Invalid recipe id', 400);

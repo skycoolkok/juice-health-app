@@ -5,6 +5,17 @@ import { getDayRange } from "@/lib/datetime";
 import { ensureRecipeTotals, type RecipeWithNutrition } from "@/lib/recipe-totals";
 import { NUTRIENT_KEYS } from "@/lib/nutrients";
 
+function maybeReadonlyResponse() {
+  if (process.env.PROD_READONLY === "true") {
+    return NextResponse.json({
+      ok: true,
+      readonly: true,
+      message: "Staging: writes are disabled",
+    });
+  }
+  return null;
+}
+
 export async function GET(request: NextRequest) {
   try {
     const context = await resolveUserContext();
@@ -63,6 +74,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const readonly = maybeReadonlyResponse();
+  if (readonly) return readonly;
+
   try {
     const body = await request.json();
     const recipeId = body?.recipeId ?? body?.recipe_id;
@@ -156,6 +170,9 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const readonly = maybeReadonlyResponse();
+  if (readonly) return readonly;
+
   try {
     const context = await resolveUserContext();
     const timezone = context.timezone ?? "Asia/Taipei";
