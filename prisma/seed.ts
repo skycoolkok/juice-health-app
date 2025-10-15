@@ -51,13 +51,13 @@ async function seedTags() {
       where: {
         name_type: {
           name: trimmed,
-          type: TagType.FUNCTIONAL,
+          type: TagType.functional,
         },
       },
       update: {},
       create: {
         name: trimmed,
-        type: TagType.FUNCTIONAL,
+        type: TagType.functional,
       },
     });
   }
@@ -69,13 +69,13 @@ async function seedTags() {
       where: {
         name_type: {
           name: trimmed,
-          type: TagType.FLAVOR,
+          type: TagType.flavor,
         },
       },
       update: {},
       create: {
         name: trimmed,
-        type: TagType.FLAVOR,
+        type: TagType.flavor,
       },
     });
   }
