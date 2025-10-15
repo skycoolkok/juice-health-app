@@ -14,7 +14,8 @@
         "postinstall": "prisma generate",
         "db:seed:rdi": "tsx prisma/seed.ts --rdi",
         "test": "tsx --test tests/**/*.test.ts",
-        "seed:recipes": "node scripts/seed-recipes.js"
+        "seed:recipes": "node scripts/seed-recipes.js",
+        "db:seed:recipes": "tsx prisma/seed_recipes.ts"
     },
     "dependencies": {
         "@prisma/client": "^6.16.2",
@@ -38,7 +39,8 @@
         "eslint-config-next": "15.5.3",
         "prisma": "^6.16.2",
         "tailwindcss": "^4",
-        "tsx": "^4.20.5",
+        "ts-node": "^10.9.2",
+        "tsx": "^4.20.6",
         "typescript": "^5"
     },
     "prisma": {
