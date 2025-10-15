@@ -51,7 +51,7 @@ export async function GET() {
 
     return NextResponse.json({ items });
   } catch (err) {
-    console.error("[API] /api/recipes error:", err);
+    console.error("[/api/recipes] failed::", err);
     return NextResponse.json(
       { error: "Failed to load recipes" },
       { status: 500 }
