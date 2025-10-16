@@ -18,7 +18,7 @@ const nextConfig = {
   //   ignoreBuildErrors: true,
   // },
 
-  // ✅ 遠端圖片來源（依你實際用到的來源調整）
+  //  遠端圖片來源（依你實際用到的來源調整）
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com' },
