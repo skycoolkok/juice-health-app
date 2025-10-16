@@ -1,45 +1,28 @@
 // next.config.mjs
-import createNextIntlPlugin from 'next-intl/plugin.js';
+import createNextIntlPlugin from 'next-intl/plugin'; // ← 不要寫 .js
 
-/**
- * 1. 連結 next-intl 設定檔
- *    (確保多語系支援仍然正常)
- */
+// 指向你的 request 檔案（相對於專案根目錄）
 const withNextIntl = createNextIntlPlugin('./src/app/i18n/request.ts');
 
-/**
- * 2. Next.js 全域設定
- */
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
 
-  /**
-   * ✅ 讓 Vercel 在 build 階段忽略 ESLint 錯誤
-   *    (不會影響開發模式)
-   */
+  // 讓 Vercel build 不因 ESLint 錯誤被中斷
   eslint: {
     ignoreDuringBuilds: true,
   },
 
-  /**
-   * ✅ 指定 Node 版本，避免 Prisma + Next 版本不一致
-   */
+  // 讓 Vercel build 不因型別錯誤被中斷（本地仍可檢查）
   typescript: {
-    // 若遇到型別錯誤，不中斷 build（僅限 Vercel）
     ignoreBuildErrors: true,
   },
 
-  /**
-   * (可選) 若使用 Edge runtime 或 Vercel function
-   * 可明確指定目標環境
-   */
+  // 可選：一些 Next 14 常用的實驗設定
   experimental: {
     typedRoutes: true,
   },
 };
 
-/**
- * 3. 匯出組合後的設定
- */
 export default withNextIntl(nextConfig);
+
