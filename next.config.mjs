@@ -8,7 +8,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
 
-  // ✅ 部署時不要因 eslint 警告而失敗
+  
   eslint: {
     ignoreDuringBuilds: true,
   },
