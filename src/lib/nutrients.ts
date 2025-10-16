@@ -1,4 +1,4 @@
-import type { NutritionFact } from '@prisma/client';
+import type { Nutrition } from '@prisma/client';
 import {
   NUTRIENT_META,
   NUTRIENT_KEYS,
@@ -310,23 +310,57 @@ export function convertToGrams(
   return convertToBase(value, unit, 'g', { ingredientName: ingredientName ?? null });
 }
 
+/**
+ * 計算營養貢獻（修正版）
+ * 這裡使用 Nutrition 模型實際存在的欄位名稱：
+ * calories, protein, fat, carbs, fiber, vitaminC, vitaminA, iron, calcium, potassium, sodium
+ */
 export function computeContribution(
-  nutrition: NutritionFact | null,
+  nutrition: Nutrition | null,
   amountInGrams: number | null
 ): NutrientTotals {
   if (!nutrition) {
     return createNaTotals();
   }
-  const baseGrams = convertToGrams(
-    nutrition.per_amount_value,
-    nutrition.per_amount_unit
-  );
+
+  // Nutrition 模型沒有 per_amount_value/unit，預設基準為 100 g
+  const baseGrams = convertToGrams(100, 'g');
   if (!baseGrams || !amountInGrams) {
     return createNaTotals();
   }
+
   const ratio = amountInGrams / baseGrams;
+
+  // 對應 NUTRIENT_KEYS -> Nutrition 真實欄位
+  const rawValues: Record<
+    | 'calories_kcal'
+    | 'protein_g'
+    | 'fat_g'
+    | 'carbs_g'
+    | 'fiber_g'
+    | 'vitamin_c_mg'
+    | 'vitamin_a_ug'
+    | 'iron_mg'
+    | 'calcium_mg'
+    | 'potassium_mg'
+    | 'sodium_mg',
+    number | null | undefined
+  > = {
+    calories_kcal: nutrition.calories,
+    protein_g: nutrition.protein,
+    fat_g: nutrition.fat,
+    carbs_g: nutrition.carbs,
+    fiber_g: nutrition.fiber,
+    vitamin_c_mg: nutrition.vitaminC,
+    vitamin_a_ug: nutrition.vitaminA,
+    iron_mg: nutrition.iron,
+    calcium_mg: nutrition.calcium,
+    potassium_mg: nutrition.potassium,
+    sodium_mg: nutrition.sodium,
+  };
+
   return NUTRIENT_KEYS.reduce((acc, key) => {
-    const nutrientValue = nutrition[key];
+    const nutrientValue = rawValues[key];
     acc[key] =
       nutrientValue === null || nutrientValue === undefined
         ? null
@@ -335,6 +369,9 @@ export function computeContribution(
   }, {} as NutrientTotals);
 }
 
+/**
+ * 格式化數值輸出
+ */
 export function formatValue(value: number | null, fractionDigits = 2): string {
   if (value === null || Number.isNaN(value)) {
     return 'NA';

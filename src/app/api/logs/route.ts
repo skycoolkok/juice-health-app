@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { resolveUserContext } from "@/lib/rdi";
 import { getDayRange } from "@/lib/datetime";
-import { ensureRecipeTotals, type RecipeWithNutrition } from "@/lib/recipe-totals";
+import { ensureRecipeTotals } from "@/lib/recipe-totals";
 import { NUTRIENT_KEYS } from "@/lib/nutrients";
 
 function maybeReadonlyResponse() {
@@ -101,18 +101,11 @@ export async function POST(request: NextRequest) {
       include: {
         ingredients: {
           include: {
-            ingredient: {
-              include: {
-                nutrition: {
-                  orderBy: { created_at: "desc" },
-                },
-              },
-            },
-          },
-        },
+            ingredient: true, // 如果你要欄位更精確，可改成 select: { id: true, name: true, unit: true }
       },
-    });
-
+    },
+  },
+});
     if (!recipe) {
       return NextResponse.json(
         { error: "Recipe not found" },
@@ -121,10 +114,11 @@ export async function POST(request: NextRequest) {
     }
 
     const { totals, perServing } = await ensureRecipeTotals({
-      recipeId: Number(recipeId),
-      recipe: recipe as RecipeWithNutrition,
-    });
-    const baseNutrition = perServing ?? totals;
+  recipeId: Number(recipeId),
+  // 不要傳 recipe，避免型別不相容
+});
+const baseNutrition = perServing ?? totals;
+
 
     const customNutritionPayload: Record<string, number | null> = {};
     for (const key of NUTRIENT_KEYS) {

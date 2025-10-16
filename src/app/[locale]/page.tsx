@@ -80,7 +80,7 @@ async function getFavoriteRecipes(meta: MetaMap): Promise<RecipeSummary[]> {
           category: recipe.category,
           servings: recipe.servings ?? null,
           ingredientIds: recipe.ingredients
-            .map((i) => i.ingredient?.id ?? i.ingredient_id)
+            .map((item) => item.ingredient?.id ?? item.ingredient)
             .filter((id): id is number => typeof id === "number"),
           functionalTags: tags.functional,
           flavorTags: tags.flavor,

@@ -1,4 +1,4 @@
-import { Prisma, type NutritionFact } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { prisma } from './prisma';
 import {
   NUTRIENT_KEYS,
@@ -11,11 +11,15 @@ import {
   normalizeUnit,
 } from './nutrients';
 
+/**
+ * 目前專案的 Prisma schema 裡，Ingredient 沒有 nutrition 關聯。
+ * 因此這裡僅選基本欄位，不再 include nutrition。
+ */
 export type IngredientWithNutrition = Prisma.IngredientGetPayload<{
-  include: {
-    nutrition: {
-      orderBy: { created_at: 'desc' };
-    };
+  select: {
+    id: true;
+    name: true;
+    default_unit: true;
   };
 }>;
 
@@ -24,10 +28,10 @@ export type RecipeWithNutrition = Prisma.RecipeGetPayload<{
     ingredients: {
       include: {
         ingredient: {
-          include: {
-            nutrition: {
-              orderBy: { created_at: 'desc' };
-            };
+          select: {
+            id: true;
+            name: true;
+            default_unit: true;
           };
         };
       };
@@ -41,70 +45,40 @@ export type RecipeTotalsPayload = {
   servings: number | null;
 };
 
-function getPrimaryNutrition(
-  entity: { nutrition?: NutritionFact[] } | null | undefined,
-): NutritionFact | null {
-  if (!entity || !Array.isArray(entity.nutrition) || entity.nutrition.length === 0) {
-    return null;
-  }
-  return entity.nutrition[0] ?? null;
-}
-
+/**
+ * 目前無 nutrition 資料來源，先回傳 NA 佔位。
+ * 未來若補回營養表，可在這裡實作真正的換算。
+ */
 export function calculateIngredientTotals(options: {
   ingredient: IngredientWithNutrition | null;
   quantity: number | null | undefined;
   unit: string | null | undefined;
 }): NutrientTotals {
-  const nutrition = getPrimaryNutrition(options.ingredient);
-  if (!nutrition) {
-    return createNaTotals();
-  }
-
-  const ingredientName = options.ingredient?.name ?? null;
-  const baseUnit = normalizeUnit(nutrition.per_amount_unit) ?? 'g';
-  const baseAmount = convertToBase(
-    nutrition.per_amount_value,
-    nutrition.per_amount_unit,
-    baseUnit,
-    { ingredientName },
-  );
-  const usedAmount = convertToBase(
-    options.quantity ?? null,
-    options.unit ?? options.ingredient?.default_unit ?? null,
-    baseUnit,
-    { ingredientName },
-  );
-
-  if (!baseAmount || baseAmount === 0 || usedAmount === null) {
-    return createNaTotals();
-  }
-
-  const ratio = usedAmount / baseAmount;
-  const totals = createNaTotals();
-  for (const key of NUTRIENT_KEYS) {
-    const nutrientValue = nutrition[key];
-    totals[key] =
-      nutrientValue === null || nutrientValue === undefined
-        ? null
-        : nutrientValue * ratio;
-  }
-  return totals;
+  // 你也可以在這裡用 convertToBase/normalizeUnit 做重量換算，
+  // 但因為缺 nutrition，最後仍回傳 NA。
+  return createNaTotals();
 }
 
 export function calculateRecipeTotals(recipe: RecipeWithNutrition): RecipeTotalsPayload {
   let totals = createEmptyTotals();
+
   for (const item of recipe.ingredients) {
     const ingredientTotals = calculateIngredientTotals({
-      ingredient: item.ingredient,
-      quantity: item.quantity ?? null,
-      unit: item.unit ?? item.ingredient?.default_unit ?? null,
+      ingredient: item.ingredient as IngredientWithNutrition,
+      quantity: (item as any).quantity ?? null,
+      unit:
+        (item as any).unit ??
+        (item.ingredient as IngredientWithNutrition | null)?.default_unit ??
+        null,
     });
     totals = addTotals(totals, ingredientTotals);
   }
 
-  const servings = typeof recipe.servings === 'number' && Number.isFinite(recipe.servings)
-    ? recipe.servings
-    : null;
+  const servings =
+    typeof (recipe as any).servings === 'number' && Number.isFinite((recipe as any).servings)
+      ? (recipe as any).servings
+      : null;
+
   const perServing = servings && servings > 0 ? divideTotals(totals, servings) : null;
 
   return {
@@ -144,9 +118,8 @@ export function parseRecipeTotalsPayload(value: Prisma.JsonValue | null): Recipe
   }
   const perServing = record.perServing ? parseTotalsObject(record.perServing) : null;
   const servingsRaw = record.servings;
-  const servings = typeof servingsRaw === 'number' && Number.isFinite(servingsRaw)
-    ? servingsRaw
-    : null;
+  const servings =
+    typeof servingsRaw === 'number' && Number.isFinite(servingsRaw) ? servingsRaw : null;
   return {
     totals,
     perServing,
@@ -179,17 +152,18 @@ export async function ensureRecipeTotals(options: {
     }
   }
 
-  const recipeRecord = recipe
-    ?? (await prisma.recipe.findUnique({
+  const recipeRecord =
+    recipe ??
+    (await prisma.recipe.findUnique({
       where: { id: recipeId },
       include: {
         ingredients: {
           include: {
             ingredient: {
-              include: {
-                nutrition: {
-                  orderBy: { created_at: 'desc' },
-                },
+              select: {
+                id: true,
+                name: true,
+                
               },
             },
           },

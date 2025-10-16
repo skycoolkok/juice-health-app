@@ -1,23 +1,17 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+// src/app/api/ingredients/route.ts
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
     const items = await prisma.ingredient.findMany({
-      orderBy: { name: 'asc' },
-      select: { id: true, name: true, category: true, default_unit: true },
+      orderBy: { name: "asc" },
+      // 只挑模型中存在的欄位：id、name、unit
+      select: { id: true, name: true, unit: true },
     });
     return NextResponse.json({ items });
   } catch (error) {
-    console.error('[GET /api/ingredients] failed', error);
-    return NextResponse.json(
-      {
-        items: [],
-        error: 'Failed to load ingredients',
-        message: error instanceof Error ? error.message : 'Unknown error',
-      },
-      { status: 500 },
-    );
+    console.error("[api/ingredients] GET failed:", error);
+    return NextResponse.json({ error: "failed to load ingredients" }, { status: 500 });
   }
 }
-

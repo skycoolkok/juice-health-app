@@ -13,41 +13,38 @@ import {
 } from './nutrients';
 
 import {
-  calculateIngredientTotals,
   ensureRecipeTotals,
   parseRecipeTotalsPayload,
   type RecipeTotalsPayload,
   type RecipeWithNutrition,
-  type IngredientWithNutrition,
 } from './recipe-totals';
 
+// ✅ Prisma Payload 型別（移除 nutrition include）
 export type IntakeItemWithRelations = Prisma.IntakeItemGetPayload<{
   include: {
     ingredient: {
-      include: {
-        nutrition: {
-          orderBy: { created_at: 'desc' },
-        },
-      },
-    },
+      select: {
+        id: true;
+        name: true;
+        default_unit: true | null;
+      };
+    };
     recipe: {
       include: {
-        nutrition_totals: true,
+        nutrition_totals: true;
         ingredients: {
-          include: {
+          select: {
             ingredient: {
-              include: {
-                nutrition: {
-                  orderBy: { created_at: 'desc' },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    custom_nutrition: true,
-  },
+              select: { id: true; name: true; default_unit: true | null };
+            };
+            amount_value: true;
+            amount_unit: true | null;
+          };
+        };
+      };
+    };
+    custom_nutrition: true;
+  };
 }>;
 
 export type IntakeLogWithRelations = Prisma.IntakeLogGetPayload<{
@@ -55,34 +52,33 @@ export type IntakeLogWithRelations = Prisma.IntakeLogGetPayload<{
     items: {
       include: {
         ingredient: {
-          include: {
-            nutrition: {
-              orderBy: { created_at: 'desc' },
-            },
-          },
-        },
+          select: {
+            id: true;
+            name: true;
+            default_unit: true | null;
+          };
+        };
         recipe: {
           include: {
-            nutrition_totals: true,
+            nutrition_totals: true;
             ingredients: {
-              include: {
+              select: {
                 ingredient: {
-                  include: {
-                    nutrition: {
-                      orderBy: { created_at: 'desc' },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-        custom_nutrition: true,
-      },
-    },
-  },
+                  select: { id: true; name: true; default_unit: true | null };
+                };
+                amount_value: true;
+                amount_unit: true | null;
+              };
+            };
+          };
+        };
+        custom_nutrition: true;
+      };
+    };
+  };
 }>;
 
+// ✅ 修正型別與語法正確的 calculateCustomTotals()
 function calculateCustomTotals(options: {
   baseValue: number;
   baseUnit: string;
@@ -94,10 +90,12 @@ function calculateCustomTotals(options: {
     options.amounts.value ?? options.baseValue,
     options.amounts.unit ?? options.baseUnit,
   );
+
   if (!baseGrams || !loggedGrams) {
     const normalizedBase = normalizeUnit(options.baseUnit);
     const loggedValue = options.amounts.value ?? options.baseValue;
     const normalizedLogged = normalizeUnit(options.amounts.unit ?? options.baseUnit);
+
     if (
       normalizedBase &&
       normalizedLogged &&
@@ -117,6 +115,7 @@ function calculateCustomTotals(options: {
     }
     return createNaTotals();
   }
+
   const ratio = loggedGrams / baseGrams;
   return NUTRIENT_KEYS.reduce((acc, key) => {
     const nutrientValue = options.nutrition[key];
@@ -138,10 +137,7 @@ export async function fetchLogsWithinRange(options: {
   const { userId, start, end } = options;
 
   const baseWhere: Prisma.IntakeLogWhereInput = {
-    logged_at: {
-      gte: start,
-      lt: end,
-    },
+    logged_at: { gte: start, lt: end },
     ...(userId ? { user_id: userId } : {}),
   };
 
@@ -149,24 +145,22 @@ export async function fetchLogsWithinRange(options: {
     items: {
       include: {
         ingredient: {
-          include: {
-            nutrition: {
-              orderBy: { created_at: 'desc' },
-            },
+          select: {
+            id: true,
+            name: true,
+            default_unit: true as const | null,
           },
         },
         recipe: {
           include: {
             nutrition_totals: true,
             ingredients: {
-              include: {
+              select: {
                 ingredient: {
-                  include: {
-                    nutrition: {
-                      orderBy: { created_at: 'desc' },
-                    },
-                  },
+                  select: { id: true, name: true, default_unit: true as const | null },
                 },
+                amount_value: true,
+                amount_unit: true as const | null,
               },
             },
           },
@@ -194,7 +188,7 @@ export async function fetchLogsWithinRange(options: {
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === 'P2021' &&
-        typeof (error.meta?.table) === 'string' &&
+        typeof error.meta?.table === 'string' &&
         error.meta.table.toLowerCase().includes('custom')
       ) {
         customNutritionAvailable = false;
@@ -230,33 +224,49 @@ async function aggregateItemList(items: IntakeItemWithRelations[]): Promise<Nutr
         amounts: { value: item.amount_value, unit: item.amount_unit },
         nutrition: item.custom_nutrition as Partial<Record<NutrientKey, number | null>>,
       });
-    } else if (item.recipe) {
-      let recipeTotals = recipeCache.get(item.recipe.id);
-      if (!recipeTotals) {
-        const cached = parseRecipeTotalsPayload(item.recipe.nutrition_totals?.totals ?? null);
-        if (cached) {
-          recipeTotals = cached;
-        } else {
-          recipeTotals = await ensureRecipeTotals({
-            recipeId: item.recipe.id,
-            recipe: item.recipe as unknown as RecipeWithNutrition,
-          });
-        }
-        recipeCache.set(item.recipe.id, recipeTotals);
-      }
-      const multiplier = item.amount_value ?? 1;
-      const isServing = (item.amount_unit ?? '').toLowerCase().includes('serv');
-      if (recipeTotals.perServing && isServing) {
-        addition = scaleTotals(recipeTotals.perServing, multiplier);
-      } else {
-        addition = scaleTotals(recipeTotals.totals, multiplier);
-      }
-    } else if (item.ingredient) {
-      addition = calculateIngredientTotals({
-        ingredient: item.ingredient as IngredientWithNutrition,
-        quantity: item.amount_value ?? null,
-        unit: item.amount_unit ?? item.ingredient.default_unit ?? null,
+// --- 替換開始（處理 item.recipe 這一段）---
+} else if (item.recipe) {
+  // 強制把快取內容收斂成 RecipeTotalsPayload | undefined
+  let recipeTotals = recipeCache.get(item.recipe.id) as RecipeTotalsPayload | undefined;
+
+  if (!recipeTotals) {
+    const cached = parseRecipeTotalsPayload(
+  (
+    item.recipe as unknown as {
+      nutrition_totals?: { totals: unknown } | null;
+    }
+  )?.nutrition_totals?.totals ?? null
+);
+    if (cached) {
+      recipeTotals = cached as RecipeTotalsPayload;
+    } else {
+      const computed = await ensureRecipeTotals({
+        recipeId: item.recipe.id,
+        recipe: item.recipe as unknown as RecipeWithNutrition,
       });
+      recipeTotals = computed as RecipeTotalsPayload;
+    }
+    recipeCache.set(item.recipe.id, recipeTotals);
+  }
+
+  const multiplier = item.amount_value ?? 1;
+  const isServing = (item.amount_unit ?? "").toLowerCase().includes("serv");
+
+let baseTotals: NutrientTotals;
+
+if (recipeTotals) {
+  if (isServing && recipeTotals.perServing) {
+    baseTotals = recipeTotals.perServing;
+  } else {
+    baseTotals = recipeTotals.totals;
+  }
+} else {
+  baseTotals = createNaTotals();
+  }
+
+  addition = scaleTotals(baseTotals, multiplier);
+// --- 替換結束 ---
+
     }
 
     totals = addTotals(totals, addition);

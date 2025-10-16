@@ -1,3 +1,4 @@
+import { TagType } from "@prisma/client";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 
@@ -12,6 +13,9 @@ import { loadRecipeOverrides } from "@/i18n/recipeOverrides";
 import { formatQty, formatUnit } from "@/i18n/units";
 import type { NutritionTranslationKey } from "@/i18n/recipes";
 import { locales, type Locale } from "@/app/i18n/config";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type _KeepTagType = TagType;
 
 const GRADIENTS = [
   "from-emerald-200 via-emerald-100 to-emerald-300",
@@ -61,12 +65,14 @@ function mergeTags(meta: TagsPayload | undefined, dbFunctional: string[], dbFlav
 
 function slugify(value: string | null | undefined): string | null {
   if (!value) return null;
-  return value
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[^\w\s-]/g, "")
-    .replace(/[\s_-]+/g, "-")
-    .replace(/^-+|-+$/g, "") || null;
+  return (
+    value
+      .toLowerCase()
+      .normalize("NFKD")
+      .replace(/[^\w\s-]/g, "")
+      .replace(/[\s_-]+/g, "-")
+      .replace(/^-+|-+$/g, "") || null
+  );
 }
 
 export default async function RecipeDetailPage({ params }: PageProps) {
@@ -75,16 +81,17 @@ export default async function RecipeDetailPage({ params }: PageProps) {
     notFound();
   }
 
+  // ✅ 更新：不再 include ingredient.nutrition；只取到 name、id、default_unit
   const recipePromise = prisma.recipe.findUnique({
     where: { id: recipeId },
     include: {
       ingredients: {
         include: {
           ingredient: {
-            include: {
-              nutrition: {
-                orderBy: { created_at: "desc" },
-              },
+            select: {
+              id: true,
+              name: true,
+              unit: true,
             },
           },
         },
@@ -96,6 +103,7 @@ export default async function RecipeDetailPage({ params }: PageProps) {
       },
     },
   });
+
   const metaPromise = getRecipeMeta();
   const contextPromise = resolveUserContext();
 
@@ -106,9 +114,7 @@ export default async function RecipeDetailPage({ params }: PageProps) {
   }
 
   const routeLocale = params.locale;
-  const locale = locales.includes(routeLocale as Locale)
-    ? (routeLocale as Locale)
-    : ((await getLocale()) as Locale);
+  const locale = locales.includes(routeLocale as Locale) ? (routeLocale as Locale) : ((await getLocale()) as Locale);
 
   const nameSlug = slugify(recipeRecord.name);
   const overrides = await loadRecipeOverrides(String(recipeRecord.id), locale, nameSlug ? [nameSlug] : []);
@@ -121,21 +127,25 @@ export default async function RecipeDetailPage({ params }: PageProps) {
   const initial = displayName.charAt(0).toUpperCase() || "J";
 
   const dbFunctional = recipeRecord.tags
-    .filter((item) => item.tag?.type === "FUNCTIONAL" && item.tag?.name)
+    .filter((item) => item.tag?.type === "functional" && item.tag?.name)
     .map((item) => item.tag!.name);
   const dbFlavor = recipeRecord.tags
-    .filter((item) => item.tag?.type === "FLAVOR" && item.tag?.name)
+    .filter((item) => item.tag?.type === "flavor" && item.tag?.name)
     .map((item) => item.tag!.name);
   const tags = mergeTags(metaMap[recipeRecord.id], dbFunctional, dbFlavor);
 
+  // ✅ 這裡改讀 RecipeIngredient.amount + Ingredient.default_unit
   const ingredients = await Promise.all(
     recipeRecord.ingredients.map(async (item, index) => {
       const overrideName = overrides?.ingredients?.[index]?.name;
       const name = overrideName ?? item.ingredient?.name ?? "";
+
       const quantity =
-        typeof item.quantity === "number" && Number.isFinite(item.quantity) ? item.quantity : null;
-      const unit = item.unit ?? item.ingredient?.default_unit ?? null;
+        typeof item.amount === "number" && Number.isFinite(item.amount) ? item.amount : null;
+
+      const unit = item.ingredient?.unit ?? null;
       const unitLabel = unit ? await formatUnit(unit, locale) : "";
+
       return {
         name,
         quantity,

@@ -8,7 +8,10 @@ import { convertToGrams, NUTRIENT_KEYS } from '@/lib/nutrients';
 import { getRecipeMeta } from '@/lib/recipeMeta';
 import { loadRdiRecords, resolveUserContext } from '@/lib/rdi';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } },
+) {
   const recipeId = Number.parseInt(params.id, 10);
   if (!Number.isFinite(recipeId)) {
     return NextResponse.json({ error: 'Invalid recipe id' }, { status: 400 });
@@ -21,14 +24,15 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         ingredients: {
           include: {
             ingredient: {
-              include: {
-                nutrition: {
-                  orderBy: { created_at: 'desc' },
-                },
+              select: {
+                id: true,
+                name: true,
+                unit: true, // 單位在 Ingredient 上
               },
             },
           },
         },
+        tags: { include: { tag: true } },
       },
     });
 
@@ -42,7 +46,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     });
 
     const context = await resolveUserContext();
-    const canPersistFavorite = context.userId !== null && context.userId !== undefined;
+    const canPersistFavorite =
+      context.userId !== null && context.userId !== undefined;
+
     let isFavorite = false;
     if (canPersistFavorite) {
       const favorite = await prisma.favorite.findUnique({
@@ -55,33 +61,49 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       });
       isFavorite = Boolean(favorite);
     }
+
     const rdi = await loadRdiRecords({ age: context.age, sex: context.sex });
     const meta = await getRecipeMeta();
     const tags = meta[recipeId] ?? { functional: [], flavor: [] };
 
-    const percentOfDaily = NUTRIENT_KEYS.reduce<Record<string, number | null>>((acc, key) => {
-      const perServingValue = perServing?.[key] ?? null;
-      const dailyValue = rdi[key]?.daily ?? null;
-      if (perServingValue === null || dailyValue === null || dailyValue === 0) {
-        acc[key] = null;
-      } else {
-        acc[key] = (perServingValue / dailyValue) * 100;
-      }
-      return acc;
-    }, {});
+    const percentOfDaily = NUTRIENT_KEYS.reduce<Record<string, number | null>>(
+      (acc, key) => {
+        const perServingValue = perServing?.[key] ?? null;
+        const dailyValue = rdi[key]?.daily ?? null;
+        if (
+          perServingValue === null ||
+          dailyValue === null ||
+          dailyValue === 0
+        ) {
+          acc[key] = null;
+        } else {
+          acc[key] = (perServingValue / dailyValue) * 100;
+        }
+        return acc;
+      },
+      {},
+    );
 
-    const ingredients = recipeRecord.ingredients.map((item) => {
-      const baseUnit = item.unit ?? item.ingredient?.default_unit ?? null;
-      const ingredientName = item.ingredient?.name ?? null;
-      const normalized = convertToGrams(item.quantity ?? null, baseUnit, ingredientName);
-      return {
-        ingredientId: item.ingredient?.id ?? null,
-        name: item.ingredient?.name ?? 'Unknown ingredient',
-        quantity: item.quantity,
-        unit: baseUnit,
-        quantityInGrams: normalized,
-      };
-    });
+    // ✅ 修正：用 item.amount 當作數量；unit 來自 ingredient.unit
+    const ingredients =
+      recipeRecord.ingredients?.map((item) => {
+        const baseUnit = item.ingredient?.unit ?? null;
+        const ingredientName = item.ingredient?.name ?? null;
+        const quantity =
+          typeof item.amount === 'number' && Number.isFinite(item.amount)
+            ? item.amount
+            : null;
+
+        const quantityInGrams = convertToGrams(quantity, baseUnit, ingredientName);
+
+        return {
+          ingredientId: item.ingredient?.id ?? null,
+          name: item.ingredient?.name ?? 'Unknown ingredient',
+          quantity,
+          unit: baseUnit,
+          quantityInGrams,
+        };
+      }) ?? [];
 
     return NextResponse.json({
       recipe: {
@@ -124,4 +146,3 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     );
   }
 }
-
