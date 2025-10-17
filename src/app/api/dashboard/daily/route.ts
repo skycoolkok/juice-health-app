@@ -1,91 +1,67 @@
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-import { NextRequest, NextResponse } from 'next/server';
-import { Sex } from '@prisma/client';
-import { calculateIntakeTotals } from '@/lib/intakes';
-import { getDayRange } from '@/lib/datetime';
-import { loadRdiRecords, resolveUserContext } from '@/lib/rdi';
-import { buildNutrientSummary } from '@/app/api/dashboard/helpers';
-import { NUTRIENT_KEYS, type NutrientKey } from '@/lib/nutrients';
+// src/app/api/dashboard/daily/route.ts
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { resolveUserContext } from '@/lib/rdi';
 
-function resolveSex(raw: string | null, fallback: Sex): Sex {
-  if (!raw) return fallback;
-  const upper = raw.toUpperCase();
-  return upper === 'MALE' ? Sex.MALE : upper === 'FEMALE' ? Sex.FEMALE : fallback;
+// 輕量型別（只抓我們會用到的欄位，避免 unknown）
+type IntakeItemLite = {
+  ingredient?: { id: number; name: string | null; unit: string | null } | null;
+  recipe?: { id: number; name: string | null; servings: number | null } | null;
+};
+type IntakeLogLite = {
+  logged_at: Date;
+  items: IntakeItemLite[];
+};
+
+function parseDate(url: string) {
+  const u = new URL(url);
+  const dateParam = u.searchParams.get('date');
+  return dateParam ? new Date(dateParam) : new Date();
 }
 
-function resolveAge(raw: string | null, fallback: number): number {
-  const parsed = raw ? Number.parseInt(raw, 10) : Number.NaN;
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
-}
-
-export async function GET(request: NextRequest) {
+export async function GET(req: Request) {
   try {
-    const search = request.nextUrl.searchParams;
-    const context = await resolveUserContext();
-    const { start, end, isoDate } = getDayRange(
-      search.get('date') ?? undefined,
-      context.timezone,
-    );
+    const date = parseDate(req.url);
+    const start = new Date(date);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(start);
+    end.setDate(start.getDate() + 1);
 
-    const targetSex = resolveSex(search.get('sex'), context.sex);
-    const targetAge = resolveAge(search.get('age'), context.age);
+    const { userId } = await resolveUserContext();
 
-    const totals = await calculateIntakeTotals({
-      userId: context.userId,
-      start,
-      end,
+    const logs = await prisma.intakeLog.findMany({
+      where: {
+        logged_at: { gte: start, lt: end },
+        ...(userId ? { user_id: userId } : {}),
+      },
+      include: {
+        items: {
+          include: {
+            ingredient: { select: { id: true, name: true, unit: true } },
+            recipe: { select: { id: true, name: true, servings: true } },
+          },
+        },
+      },
     });
-    const rdi = await loadRdiRecords({ age: targetAge, sex: targetSex });
-    const summary = buildNutrientSummary({ totals, rdi, timeframe: 'daily' });
 
-    const intakeValues: Record<NutrientKey, number | null> = {} as Record<
-      NutrientKey,
-      number | null
-    >;
-    const percentValues: Record<NutrientKey, number | null> = {} as Record<
-      NutrientKey,
-      number | null
-    >;
-    const rdiDailyValues: Record<NutrientKey, number | null> = {} as Record<
-      NutrientKey,
-      number | null
-    >;
-    const rdiWeeklyValues: Record<NutrientKey, number | null> = {} as Record<
-      NutrientKey,
-      number | null
-    >;
+    const typed: IntakeLogLite[] = (logs ?? []).map((l) => ({
+      logged_at: l.logged_at,
+      items: (l.items ?? []) as IntakeItemLite[],
+    }));
 
-    for (const key of NUTRIENT_KEYS) {
-      intakeValues[key] = totals[key] ?? null;
-      percentValues[key] = summary[key]?.percent ?? null;
-      rdiDailyValues[key] = rdi[key]?.daily ?? null;
-      rdiWeeklyValues[key] = rdi[key]?.weekly ?? null;
+    if (typed.length === 0) {
+      return NextResponse.json({ summary: {}, logs: [], message: 'no logs found' });
     }
 
+    const totalItems = typed.flatMap((l) => l.items).length;
+
     return NextResponse.json({
-      date: isoDate,
-      timezone: context.timezone,
-      sex: targetSex,
-      age: targetAge,
-      totals: summary,
-      intake: intakeValues,
-      percent: percentValues,
-      rdi: {
-        daily: rdiDailyValues,
-        weekly: rdiWeeklyValues,
-      },
+      summary: { totalItems },
+      logs: typed,
     });
-  } catch (error) {
-    console.error('[GET /api/dashboard/daily] failed', error);
-    return NextResponse.json(
-      {
-        error: 'Failed to build daily dashboard',
-        message: error instanceof Error ? error.message : 'Unknown error',
-        totals: {},
-      },
-      { status: 500 },
-    );
+  } catch (err) {
+    console.error('[api/dashboard/daily] failed:', err);
+    // 回 200，前端不會炸掉
+    return NextResponse.json({ summary: {}, logs: [], error: 'failed' }, { status: 200 });
   }
 }
-

@@ -1,92 +1,75 @@
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-import { NextRequest, NextResponse } from 'next/server';
-import { Sex } from '@prisma/client';
-import { calculateIntakeTotals } from '@/lib/intakes';
-import { getSevenDayRange } from '@/lib/datetime';
-import { loadRdiRecords, resolveUserContext } from '@/lib/rdi';
-import { buildNutrientSummary } from '@/app/api/dashboard/helpers';
-import { NUTRIENT_KEYS, type NutrientKey } from '@/lib/nutrients';
+// src/app/api/dashboard/weekly/route.ts
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { resolveUserContext } from '@/lib/rdi';
 
-function resolveSex(raw: string | null, fallback: Sex): Sex {
-  if (!raw) return fallback;
-  const upper = raw.toUpperCase();
-  return upper === 'MALE' ? Sex.MALE : upper === 'FEMALE' ? Sex.FEMALE : fallback;
+// 輕量型別（只抓我們會用到的欄位，避免 unknown）
+type IntakeItemLite = {
+  ingredient?: { id: number; name: string | null; unit: string | null } | null;
+  recipe?: { id: number; name: string | null; servings: number | null } | null;
+};
+type IntakeLogLite = {
+  logged_at: Date;
+  items: IntakeItemLite[];
+};
+
+function parseRange(url: string) {
+  const u = new URL(url);
+  const endParam = u.searchParams.get('end');
+  const end = endParam ? new Date(endParam) : new Date();
+  const start = new Date(end);
+  start.setDate(end.getDate() - 7);
+  start.setHours(0, 0, 0, 0);
+  return { start, end };
 }
 
-function resolveAge(raw: string | null, fallback: number): number {
-  const parsed = raw ? Number.parseInt(raw, 10) : Number.NaN;
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
-}
-
-export async function GET(request: NextRequest) {
+export async function GET(req: Request) {
   try {
-    const search = request.nextUrl.searchParams;
-    const context = await resolveUserContext();
-    const { start, end, endIsoDate, startIsoDate } = getSevenDayRange(
-      search.get('end') ?? undefined,
-      context.timezone,
-    );
+    const { start, end } = parseRange(req.url);
+    const { userId } = await resolveUserContext();
 
-    const targetSex = resolveSex(search.get('sex'), context.sex);
-    const targetAge = resolveAge(search.get('age'), context.age);
-
-    const totals = await calculateIntakeTotals({
-      userId: context.userId,
-      start,
-      end,
+    const logs = await prisma.intakeLog.findMany({
+      where: {
+        logged_at: { gte: start, lt: end },
+        ...(userId ? { user_id: userId } : {}),
+      },
+      orderBy: { logged_at: 'asc' },
+      include: {
+        items: {
+          include: {
+            ingredient: { select: { id: true, name: true, unit: true } },
+            recipe: { select: { id: true, name: true, servings: true } },
+          },
+        },
+      },
     });
-    const rdi = await loadRdiRecords({ age: targetAge, sex: targetSex });
-    const summary = buildNutrientSummary({ totals, rdi, timeframe: 'weekly' });
 
-    const intakeValues: Record<NutrientKey, number | null> = {} as Record<
-      NutrientKey,
-      number | null
-    >;
-    const percentValues: Record<NutrientKey, number | null> = {} as Record<
-      NutrientKey,
-      number | null
-    >;
-    const rdiDailyValues: Record<NutrientKey, number | null> = {} as Record<
-      NutrientKey,
-      number | null
-    >;
-    const rdiWeeklyValues: Record<NutrientKey, number | null> = {} as Record<
-      NutrientKey,
-      number | null
-    >;
+    const typed: IntakeLogLite[] = (logs ?? []).map((l) => ({
+      logged_at: l.logged_at,
+      items: (l.items ?? []) as IntakeItemLite[],
+    }));
 
-    for (const key of NUTRIENT_KEYS) {
-      intakeValues[key] = totals[key] ?? null;
-      percentValues[key] = summary[key]?.percent ?? null;
-      rdiDailyValues[key] = rdi[key]?.daily ?? null;
-      rdiWeeklyValues[key] = rdi[key]?.weekly ?? null;
+    if (typed.length === 0) {
+      return NextResponse.json({ summary: [], logs: [], message: 'no logs found' });
     }
 
-    return NextResponse.json({
-      startDate: startIsoDate,
-      endDate: endIsoDate,
-      timezone: context.timezone,
-      sex: targetSex,
-      age: targetAge,
-      totals: summary,
-      intake: intakeValues,
-      percent: percentValues,
-      rdi: {
-        daily: rdiDailyValues,
-        weekly: rdiWeeklyValues,
-      },
-    });
-  } catch (error) {
-    console.error('[GET /api/dashboard/weekly] failed', error);
-    return NextResponse.json(
-      {
-        error: 'Failed to build weekly dashboard',
-        message: error instanceof Error ? error.message : 'Unknown error',
-        totals: {},
-      },
-      { status: 500 },
-    );
+    // 依日期分組（yyyy-mm-dd -> items[]）
+    const grouped: Record<string, IntakeItemLite[]> = {};
+    for (const log of typed) {
+      const key = log.logged_at.toISOString().split('T')[0];
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(...(log.items ?? []));
+    }
+
+    const summary = Object.entries(grouped).map(([date, items]) => ({
+      date,
+      count: items.length,
+    }));
+
+    return NextResponse.json({ summary, logs: typed });
+  } catch (err) {
+    console.error('[api/dashboard/weekly] failed:', err);
+    // 回 200，前端不會炸掉
+    return NextResponse.json({ summary: [], logs: [], error: 'failed' }, { status: 200 });
   }
 }
-
