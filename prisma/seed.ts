@@ -6,12 +6,21 @@ import { parse } from 'csv-parse/sync';
 const prisma = new PrismaClient();
 const PROJECT_ROOT = path.resolve(__dirname, '..');
 
+// ✅ 改成 PostgreSQL 的查詢方式
 async function tableExists(table: string): Promise<boolean> {
   try {
-    const result = await prisma.$queryRaw<{ name: string }[]>(
-      Prisma.sql`SELECT name FROM sqlite_master WHERE type='table' AND name = ${table}`,
+    // 在 Postgres 用 information_schema 查是否存在
+    const result = await prisma.$queryRaw<{ exists: boolean }[]>(
+      Prisma.sql`
+        SELECT EXISTS (
+          SELECT 1
+          FROM information_schema.tables
+          WHERE table_schema = 'public'
+            AND table_name = ${table}
+        ) AS "exists"
+      `
     );
-    return result.length > 0;
+    return result?.[0]?.exists === true;
   } catch (error) {
     console.warn(`[seed] failed to check table "${table}"`, error);
     return false;

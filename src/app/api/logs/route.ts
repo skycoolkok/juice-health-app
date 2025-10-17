@@ -1,215 +1,73 @@
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { resolveUserContext } from "@/lib/rdi";
-import { getDayRange } from "@/lib/datetime";
-import { ensureRecipeTotals } from "@/lib/recipe-totals";
-import { NUTRIENT_KEYS } from "@/lib/nutrients";
+// src/app/api/logs/route.ts
+import { NextResponse, type NextRequest } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { resolveUserContext } from '@/lib/rdi';
 
-function maybeReadonlyResponse() {
-  if (process.env.PROD_READONLY === "true") {
-    return NextResponse.json({
-      ok: true,
-      readonly: true,
-      message: "Staging: writes are disabled",
-    });
+function parseRange(req: NextRequest) {
+  const url = new URL(req.url);
+  const startStr = url.searchParams.get('start');
+  const endStr = url.searchParams.get('end');
+
+  // 預設取最近 7 天
+  const end = endStr ? new Date(endStr) : new Date();
+  const start = startStr
+    ? new Date(startStr)
+    : new Date(end.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+  // 保底
+  if (Number.isNaN(start.getTime())) {
+    start.setTime(end.getTime() - 7 * 24 * 60 * 60 * 1000);
   }
-  return null;
+  if (Number.isNaN(end.getTime())) {
+    end.setTime(Date.now());
+  }
+  return { start, end };
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(req: NextRequest) {
   try {
+    const { start, end } = parseRange(req);
     const context = await resolveUserContext();
-    const timezone = context.timezone ?? "Asia/Taipei";
-    const search = request.nextUrl.searchParams;
-    const { start, end, isoDate } = getDayRange(
-      search.get("date") ?? undefined,
-      timezone,
-    );
 
+    // where 條件安全拼接（userId 可能為 null）
+    const where: any = {
+      logged_at: { gte: start, lt: end },
+    };
+    if (context.userId) where.user_id = context.userId;
+
+    // 請注意：這裡只 select 存在於 schema 的欄位，避免 runtime 錯誤
     const logs = await prisma.intakeLog.findMany({
-      where: {
-        logged_at: {
-          gte: start,
-          lt: end,
-        },
-        ...(context.userId ? { user_id: context.userId } : {}),
-      },
-      orderBy: { logged_at: "asc" },
-      include: {
+      where,
+      orderBy: { logged_at: 'asc' },
+      select: {
+        id: true,
+        logged_at: true,
+        notes: true,
         items: {
-          include: {
-            recipe: { select: { id: true, name: true } },
-            ingredient: { select: { id: true, name: true } },
-          },
-        },
-      },
-    });
-
-    return NextResponse.json({
-      date: isoDate,
-      timezone,
-      logs: logs.map((log) => ({
-        id: log.id,
-        loggedAt: log.logged_at,
-        items: log.items.map((item) => ({
-          id: item.id,
-          recipeId: item.recipe_id,
-          recipeName: item.recipe?.name ?? null,
-          ingredientName: item.ingredient?.name ?? null,
-          amountValue: item.amount_value,
-          amountUnit: item.amount_unit,
-        })),
-      })),
-    });
-  } catch (error) {
-    console.error("[GET /api/logs]", error);
-    return NextResponse.json(
-      {
-        error: "Failed to load intake logs",
-        message: error instanceof Error ? error.message : "Unknown error",
-      },
-      { status: 500 },
-    );
-  }
-}
-
-export async function POST(request: NextRequest) {
-  const readonly = maybeReadonlyResponse();
-  if (readonly) return readonly;
-
-  try {
-    const body = await request.json();
-    const recipeId = body?.recipeId ?? body?.recipe_id;
-    const multiplier = Number(body?.multiplier ?? 1);
-    const dateInput = body?.date ?? body?.loggedAt ?? body?.logged_at;
-
-    if (!recipeId || Number.isNaN(Number(recipeId))) {
-      return NextResponse.json(
-        { error: "recipeId is required" },
-        { status: 400 },
-      );
-    }
-
-    const context = await resolveUserContext();
-    const timezone = context.timezone ?? "Asia/Taipei";
-    const loggedAt = dateInput
-      ? getDayRange(dateInput, timezone).start
-      : new Date();
-
-    const recipe = await prisma.recipe.findUnique({
-      where: { id: Number(recipeId) },
-      include: {
-        ingredients: {
-          include: {
-            ingredient: true, // 如果你要欄位更精確，可改成 select: { id: true, name: true, unit: true }
-      },
-    },
-  },
-});
-    if (!recipe) {
-      return NextResponse.json(
-        { error: "Recipe not found" },
-        { status: 404 },
-      );
-    }
-
-    const { totals, perServing } = await ensureRecipeTotals({
-  recipeId: Number(recipeId),
-  // 不要傳 recipe，避免型別不相容
-});
-const baseNutrition = perServing ?? totals;
-
-
-    const customNutritionPayload: Record<string, number | null> = {};
-    for (const key of NUTRIENT_KEYS) {
-      const value = baseNutrition[key];
-      customNutritionPayload[key] = value === null ? null : value;
-    }
-
-    const log = await prisma.intakeLog.create({
-      data: {
-        user_id: context.userId,
-        logged_at: loggedAt,
-        items: {
-          create: {
-            recipe_id: Number(recipeId),
-            amount_value: Number.isFinite(multiplier) ? multiplier : 1,
-            amount_unit: "serving",
-            custom_nutrition: {
-              create: {
-                base_amount_value: 1,
-                base_amount_unit: "serving",
-                ...customNutritionPayload,
-              },
+          select: {
+            id: true,
+            amount_value: true,
+            amount_unit: true,
+            notes: true,
+            // ingredient 只拿到真的存在的欄位
+            ingredient: {
+              select: { id: true, name: true, unit: true },
             },
+            // recipe 只拿必要欄位（若前端會再打細節，再另外查）
+            recipe: {
+              select: { id: true, name: true, servings: true },
+            },
+            // 自訂營養（若有）
+            custom_nutrition: true,
           },
         },
-      },
-      include: {
-        items: true,
       },
     });
 
-    return NextResponse.json({ ok: true, log });
+    return NextResponse.json({ items: logs });
   } catch (error) {
-    console.error("[POST /api/logs]", error);
-    return NextResponse.json(
-      {
-        error: "Failed to create intake log",
-        message: error instanceof Error ? error.message : "Unknown error",
-      },
-      { status: 500 },
-    );
+    console.error('[GET /api/logs] failed', error);
+    // 即使失敗也傳空陣列，避免前端出錯
+    return NextResponse.json({ items: [], error: 'failed' }, { status: 200 });
   }
 }
-
-export async function DELETE(request: NextRequest) {
-  const readonly = maybeReadonlyResponse();
-  if (readonly) return readonly;
-
-  try {
-    const context = await resolveUserContext();
-    const timezone = context.timezone ?? "Asia/Taipei";
-    const search = request.nextUrl.searchParams;
-    const idParam = search.get("id");
-    const dateParam = search.get("date") ?? undefined;
-    let targetId = idParam ? Number.parseInt(idParam, 10) : Number.NaN;
-
-    if (Number.isNaN(targetId)) {
-      const { start, end } = getDayRange(dateParam, timezone);
-      const latest = await prisma.intakeLog.findFirst({
-        where: {
-          logged_at: {
-            gte: start,
-            lt: end,
-          },
-          ...(context.userId ? { user_id: context.userId } : {}),
-        },
-        orderBy: { logged_at: "desc" },
-      });
-
-      if (!latest) {
-        return NextResponse.json(
-          { error: "No intake logs to delete" },
-          { status: 404 },
-        );
-      }
-
-      targetId = latest.id;
-    }
-
-    await prisma.intakeLog.delete({ where: { id: targetId } });
-
-    return NextResponse.json({ ok: true, deletedId: targetId });
-  } catch (error) {
-    console.error("[DELETE /api/logs]", error);
-    return NextResponse.json(
-      {
-        error: "Failed to delete intake log",
-        message: error instanceof Error ? error.message : "Unknown error",
-      },
-      { status: 500 },
-    );
-  }
-}
-

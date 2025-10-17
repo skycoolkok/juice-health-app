@@ -1,49 +1,53 @@
 {
-    "name": "juice-health-app",
-    "version": "0.1.0",
-    "private": true,
-    "scripts": {
-        "deploy:prod": "node -e \"process.platform==='win32'?console.log('ps1'):console.log('sh')\" | findstr /r \".*\" >NUL && powershell -ExecutionPolicy Bypass -File scripts/deploy-prod.ps1 || sh scripts/deploy-prod.sh",
-        "deploy:prod:dry": "node -e \"process.platform==='win32'?console.log('ps1'):console.log('sh')\" | findstr /r \".*\" >NUL && powershell -ExecutionPolicy Bypass -File scripts/deploy-prod.ps1 -DryRun || sh scripts/deploy-prod.sh --dry-run",
-        "dev": "next dev -p 3000",
-        "build": "next build",
-        "start": "next start",
-        "lint": "next lint",
-        "db:push": "prisma db push",
-        "db:seed": "prisma db seed",
-        "postinstall": "prisma generate",
-        "db:seed:rdi": "tsx prisma/seed.ts --rdi",
-        "test": "tsx --test tests/**/*.test.ts",
-        "seed:recipes": "node scripts/seed-recipes.js",
-        "db:seed:recipes": "tsx prisma/seed_recipes.ts"
-    },
-    "dependencies": {
-        "@prisma/client": "^6.16.2",
-        "csv-parse": "^6.1.0",
-        "date-fns": "^4.1.0",
-        "date-fns-tz": "^3.2.0",
-        "eslint": "^8.57.0",
-        "luxon": "^3.7.2",
-        "next": "14.2.33",
-        "next-intl": "^3.12.0",
-        "react": "18.3.1",
-        "react-dom": "18.3.1"
-    },
-    "devDependencies": {
-        "@eslint/eslintrc": "^3",
-        "@tailwindcss/postcss": "^4",
-        "@types/luxon": "^3.7.1",
-        "@types/node": "^20",
-        "@types/react": "^19",
-        "@types/react-dom": "^19",
-        "eslint-config-next": "15.5.3",
-        "prisma": "^6.16.2",
-        "tailwindcss": "^4",
-        "ts-node": "^10.9.2",
-        "tsx": "^4.20.6",
-        "typescript": "^5"
-    },
-    "prisma": {
-        "seed": "tsx prisma/seed.ts"
-    }
+  "name": "juice-health-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "deploy:prod": "node -e \"process.platform==='win32'?console.log('ps1'):console.log('sh')\" | findstr /r \".*\" >NUL && powershell -ExecutionPolicy Bypass -File scripts/deploy-prod.ps1 || sh scripts/deploy-prod.sh",
+    "deploy:prod:dry": "node -e \"process.platform==='win32'?console.log('ps1'):console.log('sh')\" | findstr /r \".*\" >NUL && powershell -ExecutionPolicy Bypass -File scripts/deploy-prod.ps1 -DryRun || sh scripts/deploy-prod.sh --dry-run",
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:push": "prisma db push",
+    "db:seed": "prisma db seed",
+    "postinstall": "prisma generate",
+    "db:seed:rdi": "tsx prisma/seed.ts --rdi",
+    "test": "tsx --test tests/**/*.test.ts",
+    "seed:recipes": "node scripts/seed-recipes.js",
+    "db:seed:recipes": "node --loader ts-node/esm prisma/seed_recipes.ts",
+
+    
+    "deploy:full": "prisma db push && prisma generate && npm run seed:recipes && next build"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.16.2",
+    "csv-parse": "^6.1.0",
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
+    "eslint": "^8.57.0",
+    "luxon": "^3.7.2",
+    "next": "14.2.33",
+    "next-intl": "^3.12.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/luxon": "^3.7.1",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint-config-next": "15.5.3",
+    "prisma": "^6.16.2",
+    "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  }
 }
+
